@@ -12,6 +12,8 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
  */
 final class GitHubRepository implements RepositoryInterface
 {
+    private const API_URL = 'https://api.github.com';
+
     private HttpClientInterface $httpClient;
     private string $token;
     private ?string $defaultBranch = null;
@@ -23,10 +25,10 @@ final class GitHubRepository implements RepositoryInterface
         $this->token = $token;
     }
 
-    public function isValid(string $name): bool
+    public function exists(string $name): bool
     {
         try {
-            $this->httpClient->request('GET', "https://api.github.com/repos/$name", [
+            $this->httpClient->request('GET', sprintf('%s/repos/%s', self::API_URL, $name), [
                 'headers' => [
                     'Accept' => 'application/vnd.github.v3+json',
                     'Authorization' => "token $this->token",
@@ -64,17 +66,18 @@ final class GitHubRepository implements RepositoryInterface
     public function getWorkflows(string $name): iterable
     {
         if (null === $this->workflows) {
-            $uri = "https://api.github.com/repos/$name";
-
             // List workflows
-            $uri .= '/actions/workflows';
             try {
-                $collection = $this->httpClient->request('GET', "$uri?branch=" . $this->getDefaultBranch($name), [
+                $collection = $this->httpClient->request(
+                    'GET',
+                    sprintf('%s/repos/%s/actions/workflows?branch=%s', self::API_URL, $name, $this->getDefaultBranch($name)),
+                    [
                         'headers' => [
                             'Accept' => 'application/vnd.github.v3+json',
                             'Authorization' => "token $this->token",
                         ],
-                    ])->toArray()['workflows'] ?? [];
+                    ]
+                )->toArray()['workflows'] ?? [];
             } catch (ExceptionInterface $exception) {
                 return $this->workflows = [];
             }
@@ -88,12 +91,16 @@ final class GitHubRepository implements RepositoryInterface
 
                 try {
                     $runs = array_reverse(array_slice(
-                        $this->httpClient->request('GET', "$uri/$item[id]/runs?branch=" . $this->getDefaultBranch($name), [
-                            'headers' => [
-                                'Accept' => 'application/vnd.github.v3+json',
-                                'Authorization' => "token $this->token",
-                            ],
-                        ])->toArray()['workflow_runs'] ?? [],
+                        $this->httpClient->request(
+                            'GET',
+                            sprintf('%s/repos/%s/actions/workflows/%d/runs?branch=%s', self::API_URL, $name, $item['id'], $this->getDefaultBranch($name)),
+                            [
+                                'headers' => [
+                                    'Accept' => 'application/vnd.github.v3+json',
+                                    'Authorization' => "token $this->token",
+                                ],
+                            ]
+                        )->toArray()['workflow_runs'] ?? [],
                         0,
                         10
                     ));

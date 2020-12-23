@@ -19,7 +19,7 @@ final class RepositoryController
      */
     public function __invoke(Environment $twig, GitHubRepository $repository, string $name): Response
     {
-        if (!$repository->isValid($name)) {
+        if (!$repository->exists($name)) {
             throw new NotFoundHttpException();
         }
 

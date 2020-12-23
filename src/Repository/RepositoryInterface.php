@@ -9,7 +9,7 @@ namespace App\Repository;
  */
 interface RepositoryInterface
 {
-    public function isValid(string $name): bool;
+    public function exists(string $name): bool;
 
     public function getDefaultBranch(string $name): string;
 
