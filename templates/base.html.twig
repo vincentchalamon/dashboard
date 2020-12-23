@@ -10,10 +10,8 @@
         {% endblock %}
     </head>
     <body>
-        <div class="background">
-            <div class="container">
-                {% block body %}{% endblock %}
-            </div>
+        <div class="container">
+            {% block body %}{% endblock %}
         </div>
         {% block javascripts %}
             <script type="application/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>

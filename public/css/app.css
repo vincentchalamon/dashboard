@@ -1,3 +1,15 @@
+html {
+    background: #0c2837;
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#0c2837), color-stop(100%,#17384c));
+    background: -webkit-linear-gradient(top,  #0c2837 0%, #17384c 100%);
+    background:    -moz-linear-gradient(top,  #0c2837 0%, #17384c 100%);
+    background:     -ms-linear-gradient(top,  #0c2837 0%, #17384c 100%);
+    background:      -o-linear-gradient(top,  #0c2837 0%, #17384c 100%);
+    background:         linear-gradient(to bottom, #0c2837 0%, #17384c 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0c2837', endColorstr='#17384c',GradientType=0 );
+    background-attachment: fixed;
+}
+
 *, a {
     color: rgba(255, 255, 255, 0.7);
     text-decoration: none;
@@ -83,17 +95,6 @@ code {
 
 .container {
     max-width: 130rem;
-}
-
-.background {
-    background: linear-gradient(to bottom, #0c2837, #17384c);
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    overflow: hidden;
-    padding-top: 50px;
 }
 
 .card {
