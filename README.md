@@ -1,5 +1,7 @@
 # GitHub Dashboard
 
+![Tests](https://github.com/vincentchalamon/dashboard/workflows/Tests/badge.svg)
+
 This project provides a dashboard to follow GitHub repositories workflows.
 
 ![Dashboard](doc/dashboard.png)

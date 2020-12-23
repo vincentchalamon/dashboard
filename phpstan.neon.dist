@@ -1,0 +1,15 @@
+includes:
+    - vendor/ekino/phpstan-banned-code/extension.neon
+    - vendor/phpstan/phpstan-symfony/extension.neon
+    - vendor/phpstan/phpstan-symfony/rules.neon
+    - vendor/phpstan/phpstan-deprecation-rules/rules.neon
+
+parameters:
+    tmpDir: .phpstan
+    bootstrapFiles:
+        - vendor/autoload.php
+    level: max
+    paths:
+        - src
+    inferPrivatePropertyTypeFromConstructor: true
+    checkMissingIterableValueType: false

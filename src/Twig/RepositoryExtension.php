@@ -31,6 +31,9 @@ final class RepositoryExtension extends AbstractExtension
         ];
     }
 
+    /**
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
     public function getRepositories(): array
     {
         try {

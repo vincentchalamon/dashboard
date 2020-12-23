@@ -1,0 +1,244 @@
+# Check documentation at https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
+name: Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request: ~
+  workflow_dispatch: ~
+
+env:
+  APP_ENV: 'test'
+  APP_DEBUG: '0'
+
+jobs:
+  php-cs-fixer:
+    name: PHP-CS-Fixer
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+          extensions: composer:v2, flex
+
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: Restore composer cache
+        uses: actions/cache@v1
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: composer-
+        continue-on-error: true
+
+      - name: Install project dependencies
+        run: composer install --prefer-dist --no-scripts --no-progress
+
+      - name: Run PHP-CS-Fixer fix
+        run: composer php-cs-fixer -- --dry-run --diff
+
+#  phpunit:
+#    name: PHPUnit
+#    runs-on: ubuntu-latest
+#    env:
+#      SYMFONY_PHPUNIT_DIR: 'vendor/bin/.phpunit'
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v2
+#
+#      - name: Setup PHP
+#        uses: shivammathur/setup-php@v2
+#        with:
+#          php-version: 7.4
+#          extensions: composer:v2, flex
+#          coverage: xdebug
+#
+#      - name: Get Composer Cache Directory
+#        id: composer-cache
+#        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+#
+#      - name: Restore composer cache
+#        uses: actions/cache@v1
+#        with:
+#          path: ${{ steps.composer-cache.outputs.dir }}
+#          key: composer-${{ hashFiles('**/composer.lock') }}
+#          restore-keys: composer-
+#        continue-on-error: true
+#
+#      - name: Install project dependencies
+#        run: composer install --prefer-dist --no-scripts --no-progress
+#
+#      - name: Run PHPUnit tests
+#        run: phpdbg -qrr composer phpunit -- --coverage-text --colors=never
+
+#  behat:
+#    name: Behat
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v2
+#
+#      - name: Setup PHP
+#        uses: shivammathur/setup-php@v2
+#        with:
+#          php-version: 7.4
+#          extensions: composer:v2, flex
+#
+#      - name: Get Composer Cache Directory
+#        id: composer-cache
+#        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+#
+#      - name: Restore composer cache
+#        uses: actions/cache@v1
+#        with:
+#          path: ${{ steps.composer-cache.outputs.dir }}
+#          key: composer-${{ hashFiles('**/composer.lock') }}
+#          restore-keys: composer-
+#        continue-on-error: true
+#
+#      - name: Install project dependencies
+#        run: composer install --prefer-dist --no-scripts --no-progress
+#
+#      - name: Install PHPUnit dependencies
+#        run: bin/phpunit --version
+#
+#      - name: Run Behat tests
+#        run: composer behat
+
+  security:
+    name: Security check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+          extensions: composer:v2, flex
+
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: Restore composer cache
+        uses: actions/cache@v1
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: composer-
+        continue-on-error: true
+
+      - name: Install project dependencies
+        run: composer install --prefer-dist --no-scripts --no-progress
+
+      - name: Run security checker
+        run: composer security
+
+  phpstan:
+    name: PHPStan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+          extensions: composer:v2, flex
+
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: Restore composer cache
+        uses: actions/cache@v1
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: composer-
+        continue-on-error: true
+
+      - name: Cache PHPStan
+        uses: actions/cache@v2
+        with:
+          path: .phpstan/
+          key: phpstan-${{ github.sha }}
+          restore-keys: phpstan-
+
+      - name: Install project dependencies
+        run: composer install --prefer-dist --no-scripts --no-progress
+
+      - name: Run PHPStan tests
+        run: composer phpstan
+
+  phpmd:
+    name: PHP Mess Detector
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+          extensions: composer:v2, flex
+
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: Restore composer cache
+        uses: actions/cache@v1
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: composer-
+        continue-on-error: true
+
+      - name: Install project dependencies
+        run: composer install --prefer-dist --no-scripts --no-progress
+
+      - name: Run PHP Mess Detector tests
+        run: composer phpmd
+
+  lint-yaml:
+    name: Lint YAML
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+          extensions: composer:v2, flex
+
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: Restore composer cache
+        uses: actions/cache@v1
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: composer-
+        continue-on-error: true
+
+      - name: Install project dependencies
+        run: composer install --prefer-dist --no-scripts --no-progress
+
+      - name: Run Linter
+        run: composer lint
