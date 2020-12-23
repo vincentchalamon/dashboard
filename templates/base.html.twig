@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}CI Dashboard{% endblock %}</title>
+        {% block stylesheets %}
+            <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic"/>
+            <link rel="stylesheet" href="{{ asset('css/milligram.min.css') }}"/>
+            <link rel="stylesheet" href="{{ asset('css/app.css') }}"/>
+        {% endblock %}
+    </head>
+    <body>
+        <div class="background">
+            <div class="container">
+                {% block body %}{% endblock %}
+            </div>
+        </div>
+        {% block javascripts %}
+            <script type="application/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        {% endblock %}
+    </body>
+</html>

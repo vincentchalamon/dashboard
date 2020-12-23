@@ -1,0 +1,186 @@
+*, a {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+}
+
+a:hover {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+code {
+    background: rgba(0, 0, 0, 0.1);
+    color: #606c76;
+    font-size: 1.2em;
+}
+
+.loader {
+    font-size: 10px;
+    margin: 50px auto 0;
+    text-indent: -9999em;
+    width: 5em;
+    height: 5em;
+    border-radius: 50%;
+    background: #ffffff;
+    background: -moz-linear-gradient(left, #ffffff 10%, rgba(255, 255, 255, 0) 42%);
+    background: -webkit-linear-gradient(left, #ffffff 10%, rgba(255, 255, 255, 0) 42%);
+    background: -o-linear-gradient(left, #ffffff 10%, rgba(255, 255, 255, 0) 42%);
+    background: -ms-linear-gradient(left, #ffffff 10%, rgba(255, 255, 255, 0) 42%);
+    background: linear-gradient(to right, #ffffff 10%, rgba(255, 255, 255, 0) 42%);
+    position: relative;
+    -webkit-animation: load3 1.4s infinite linear;
+    animation: load3 1.4s infinite linear;
+    -webkit-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    transform: translateZ(0);
+}
+
+.loader:before {
+    width: 50%;
+    height: 50%;
+    background: #ffffff;
+    border-radius: 100% 0 0 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    content: '';
+}
+
+.loader:after {
+    background: #0c2837;
+    width: 75%;
+    height: 75%;
+    border-radius: 50%;
+    content: '';
+    margin: auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+
+@-webkit-keyframes load3 {
+    0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes load3 {
+    0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+
+.container {
+    max-width: 130rem;
+}
+
+.background {
+    background: linear-gradient(to bottom, #0c2837, #17384c);
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+    padding-top: 50px;
+}
+
+.card {
+    padding: 0;
+    margin: 1%;
+    width: 31%;
+    background: #0c2837;
+    border-radius: 7px;
+    border: thin solid rgba(255, 255, 255, 0.1);
+    float: left;
+    position: relative;
+    height: 220px;
+}
+
+.card .title {
+    padding: 10px;
+    margin: 0;
+    border-bottom: thin solid rgba(255, 255, 255, 0.1);
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+    background: #17384c;
+    font-weight: bold;
+    width: 100%;
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+}
+
+.card .error {
+    background: url('../img/error.png') no-repeat top left;
+    background-size: contain;
+    padding-left: 35px;
+}
+
+.card .card-content {
+    padding: 10px;
+    font-size: 14px;
+}
+
+.card .card-content a {
+    display: inline-block;
+    max-width: 92%;
+    white-space: nowrap;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+}
+
+.card .card-content svg {
+    display: inline-block;
+    margin: 0 5px 4px 0;
+}
+
+.card .card-footer {
+    width: 95%;
+    position: absolute;
+    bottom: 0;
+    left: 2.5%;
+    padding: 10px 0;
+    border-top: thin solid rgba(255, 255, 255, 0.2);
+}
+
+.card .card-footer .workflow {
+    line-height: 30px;
+}
+
+.card .card-footer .workflow .name {
+    width: 30%;
+    display: inline-block;
+    text-align: right;
+    padding-right: 1%;
+    font-size: 0.9em;
+}
+
+.card .card-footer a {
+    margin: 0 2px;
+}
+
+.card .card-footer svg.active {
+    transform: scale(1.5);
+    border-radius: 50%;
+}
+
+.card .card-footer svg.success.active {
+    background: rgb(66, 88, 26) none repeat scroll 0 0;
+}
+
+.card .card-footer svg.failure.active {
+    background: rgb(86, 23, 15) none repeat scroll 0 0;
+}

@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% for repository in getRepositories() %}
+        <div class="card">
+            <h5 class="title">{{ repository }}</h5>
+            <div class="loader">Loading...</div>
+        </div>
+    {% else %}
+        <h3>You don't follow any repository!</h3>
+        <p>Start following GitHub repositories by adding them in the "repositories.yaml" file:</p>
+        <pre><code>repositories:
+  - https://github.com/api-platform/demo/
+  - https://github.com/GregoireHebert/docusign-bundle/</code></pre>
+    {% endfor %}
+    <div class="clearfix"></div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="application/javascript">
+        $(document).ready(function () {
+            $('.card').each(function () {
+                const $this = $(this);
+                const title = $('.title', $(this)).text();
+                $.ajax({
+                    url: `/${title}`,
+                    error: function () {
+                        $('.loader', $this).fadeOut('fast', function () {
+                            const $result = $('<div class="card-content"><h4 class="error">Invalid repository!</h4><p>This repository does not exist on GitHub.</p></div>').hide();
+                            $(this).replaceWith($result);
+                            $result.fadeIn('fast');
+                        });
+                    },
+                    success: function (result) {
+                        $('.loader', $this).fadeOut('fast', function () {
+                            const $result = $(result).hide();
+                            $(this).replaceWith($result);
+                            $result.fadeIn('fast');
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}
