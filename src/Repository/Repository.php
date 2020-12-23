@@ -6,6 +6,10 @@ namespace App\Repository;
 
 /**
  * @author Vincent Chalamon <vincentchalamon@gmail.com>
+ *
+ * @method string getDefaultBranch()
+ * @method string getUrl()
+ * @method iterable getWorkflows()
  */
 final class Repository
 {
@@ -23,13 +27,12 @@ final class Repository
         return $this->name;
     }
 
-    public function getUrl(): string
+    public function __call(string $method, array $arguments)
     {
-        return $this->repository->getUrl($this->getName());
-    }
+        if (!method_exists($this->repository, $method)) {
+            $method = 'get'.ucfirst($method);
+        }
 
-    public function getWorkflows(): iterable
-    {
-        return $this->repository->getWorkflows($this->getName());
+        return call_user_func([$this->repository, $method], $this->getName());
     }
 }

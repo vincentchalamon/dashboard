@@ -14,6 +14,8 @@ final class GitHubRepository implements RepositoryInterface
 {
     private HttpClientInterface $httpClient;
     private string $token;
+    private ?string $defaultBranch = null;
+    private ?iterable $workflows = null;
 
     public function __construct(HttpClientInterface $httpClient, string $token)
     {
@@ -37,6 +39,23 @@ final class GitHubRepository implements RepositoryInterface
         }
     }
 
+    /**
+     * @throws ExceptionInterface
+     */
+    public function getDefaultBranch(string $name): string
+    {
+        if (null === $this->defaultBranch) {
+            $this->defaultBranch = $this->httpClient->request('GET', "https://api.github.com/repos/$name", [
+                    'headers' => [
+                        'Accept' => 'application/vnd.github.v3+json',
+                        'Authorization' => "token $this->token",
+                    ],
+                ])->toArray()['default_branch'] ?? 'main';
+        }
+
+        return $this->defaultBranch;
+    }
+
     public function getUrl(string $name): string
     {
         return "https://github.com/$name";
@@ -44,58 +63,48 @@ final class GitHubRepository implements RepositoryInterface
 
     public function getWorkflows(string $name): iterable
     {
-        $uri = "https://api.github.com/repos/$name";
+        if (null === $this->workflows) {
+            $uri = "https://api.github.com/repos/$name";
 
-        // Get default branch
-        try {
-            $defaultBranch = $this->httpClient->request('GET', $uri, [
-                    'headers' => [
-                        'Accept' => 'application/vnd.github.v3+json',
-                        'Authorization' => "token $this->token",
-                    ],
-                ])->toArray()['default_branch'] ?? 'main';
-        } catch (ExceptionInterface $exception) {
-            return [];
-        }
-
-        // List workflows
-        $uri .= '/actions/workflows';
-        try {
-            $collection = $this->httpClient->request('GET', "$uri?branch=$defaultBranch", [
-                    'headers' => [
-                        'Accept' => 'application/vnd.github.v3+json',
-                        'Authorization' => "token $this->token",
-                    ],
-                ])->toArray()['workflows'] ?? [];
-        } catch (ExceptionInterface $exception) {
-            return [];
-        }
-
-        // Get workflows status
-        $workflows = [];
-        foreach ($collection as $item) {
-            if (empty($item['path']) || 'active' !== $item['state']) {
-                continue;
-            }
-
+            // List workflows
+            $uri .= '/actions/workflows';
             try {
-                $runs = array_reverse(array_slice(
-                    $this->httpClient->request('GET', "$uri/$item[id]/runs?branch=$defaultBranch", [
+                $collection = $this->httpClient->request('GET', "$uri?branch=" . $this->getDefaultBranch($name), [
                         'headers' => [
                             'Accept' => 'application/vnd.github.v3+json',
                             'Authorization' => "token $this->token",
                         ],
-                    ])->toArray()['workflow_runs'] ?? [],
-                    0,
-                    10
-                ));
+                    ])->toArray()['workflows'] ?? [];
             } catch (ExceptionInterface $exception) {
-                continue;
+                return $this->workflows = [];
             }
 
-            $workflows[$item['id']] = $runs;
+            // Get workflows status
+            $this->workflows = [];
+            foreach ($collection as $item) {
+                if (empty($item['path']) || 'active' !== $item['state']) {
+                    continue;
+                }
+
+                try {
+                    $runs = array_reverse(array_slice(
+                        $this->httpClient->request('GET', "$uri/$item[id]/runs?branch=" . $this->getDefaultBranch($name), [
+                            'headers' => [
+                                'Accept' => 'application/vnd.github.v3+json',
+                                'Authorization' => "token $this->token",
+                            ],
+                        ])->toArray()['workflow_runs'] ?? [],
+                        0,
+                        10
+                    ));
+                } catch (ExceptionInterface $exception) {
+                    continue;
+                }
+
+                $this->workflows[$item['id']] = $runs;
+            }
         }
 
-        return $workflows;
+        return $this->workflows;
     }
 }
