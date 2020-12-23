@@ -13,7 +13,7 @@ This project provides a dashboard to follow GitHub repositories workflows.
 # Install
 
 ```shell
-git clone <url> dashboard
+git clone git@github.com:vincentchalamon/dashboard.git dashboard
 cd dashboard
 symfony server:start
 ```
