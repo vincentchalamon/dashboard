@@ -2,8 +2,8 @@
 
 namespace App\Controller;
 
-use App\Repository\GitHubRepository;
 use App\Repository\Repository;
+use App\Repository\RepositoryInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -17,7 +17,7 @@ final class RepositoryController
     /**
      * @Route("/{name}", condition="request.isXmlHttpRequest()", requirements={"name"=".+"})
      */
-    public function __invoke(Environment $twig, GitHubRepository $repository, string $name): Response
+    public function __invoke(Environment $twig, RepositoryInterface $repository, string $name): Response
     {
         if (!$repository->exists($name)) {
             throw new NotFoundHttpException();

@@ -13,6 +13,8 @@ services:
         bind:
             $projectDir: '%kernel.project_dir%'
 
+    App\Repository\RepositoryInterface: '@App\Repository\GitHubRepository'
+
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
     App\:
@@ -33,3 +35,6 @@ services:
     App\Repository\GitHubRepository:
         arguments:
             $token: '%env(GITHUB_API_TOKEN)%'
+
+    App\Repository\CachedRepository:
+        decorates: 'App\Repository\GitHubRepository'

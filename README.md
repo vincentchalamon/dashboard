@@ -8,6 +8,7 @@ This project provides a dashboard to follow GitHub repositories workflows.
 
 - [PHP](https://www.php.net/) >= 7.4
 - [Symfony](https://symfony.com/download)
+- [Redis](https://redis.io/)
 
 # Install
 

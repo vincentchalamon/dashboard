@@ -17,7 +17,6 @@ final class GitHubRepository implements RepositoryInterface
     private HttpClientInterface $httpClient;
     private string $token;
     private ?string $defaultBranch = null;
-    private ?iterable $workflows = null;
 
     public function __construct(HttpClientInterface $httpClient, string $token)
     {
@@ -65,53 +64,51 @@ final class GitHubRepository implements RepositoryInterface
 
     public function getWorkflows(string $name): iterable
     {
-        if (null === $this->workflows) {
-            // List workflows
-            try {
-                $collection = $this->httpClient->request(
-                    'GET',
-                    sprintf('%s/repos/%s/actions/workflows?branch=%s', self::API_URL, $name, $this->getDefaultBranch($name)),
-                    [
-                        'headers' => [
-                            'Accept' => 'application/vnd.github.v3+json',
-                            'Authorization' => "token $this->token",
-                        ],
-                    ]
-                )->toArray()['workflows'] ?? [];
-            } catch (ExceptionInterface $exception) {
-                return $this->workflows = [];
-            }
-
-            // Get workflows status
-            $this->workflows = [];
-            foreach ($collection as $item) {
-                if (empty($item['path']) || 'active' !== $item['state']) {
-                    continue;
-                }
-
-                try {
-                    $runs = array_reverse(array_slice(
-                        $this->httpClient->request(
-                            'GET',
-                            sprintf('%s/repos/%s/actions/workflows/%d/runs?branch=%s', self::API_URL, $name, $item['id'], $this->getDefaultBranch($name)),
-                            [
-                                'headers' => [
-                                    'Accept' => 'application/vnd.github.v3+json',
-                                    'Authorization' => "token $this->token",
-                                ],
-                            ]
-                        )->toArray()['workflow_runs'] ?? [],
-                        0,
-                        10
-                    ));
-                } catch (ExceptionInterface $exception) {
-                    continue;
-                }
-
-                $this->workflows[$item['id']] = $runs;
-            }
+        // List workflows
+        try {
+            $collection = $this->httpClient->request(
+                'GET',
+                sprintf('%s/repos/%s/actions/workflows?branch=%s', self::API_URL, $name, $this->getDefaultBranch($name)),
+                [
+                    'headers' => [
+                        'Accept' => 'application/vnd.github.v3+json',
+                        'Authorization' => "token $this->token",
+                    ],
+                ]
+            )->toArray()['workflows'] ?? [];
+        } catch (ExceptionInterface $exception) {
+            return [];
         }
 
-        return $this->workflows;
+        // Get workflows status
+        $workflows = [];
+        foreach ($collection as $item) {
+            if (empty($item['path']) || 'active' !== $item['state']) {
+                continue;
+            }
+
+            try {
+                $runs = array_reverse(array_slice(
+                    $this->httpClient->request(
+                        'GET',
+                        sprintf('%s/repos/%s/actions/workflows/%d/runs?branch=%s', self::API_URL, $name, $item['id'], $this->getDefaultBranch($name)),
+                        [
+                            'headers' => [
+                                'Accept' => 'application/vnd.github.v3+json',
+                                'Authorization' => "token $this->token",
+                            ],
+                        ]
+                    )->toArray()['workflow_runs'] ?? [],
+                    0,
+                    10
+                ));
+            } catch (ExceptionInterface $exception) {
+                continue;
+            }
+
+            $workflows[$item['id']] = $runs;
+        }
+
+        return $workflows;
     }
 }
