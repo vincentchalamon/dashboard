@@ -146,14 +146,19 @@ code {
 .card .card-content svg {
     display: inline-block;
     font-size: 12pt;
-}
-
-.card .card-content svg.github {
     margin: 0 5px 4px 0;
 }
 
+.card .card-content svg.github {
+    margin-bottom: 4px;
+}
+
 .card .card-content svg.branch {
-    margin: 0 5px -3px 0;
+    margin-bottom: -3px;
+}
+
+.card .card-content svg.star {
+    margin-bottom: -2px;
 }
 
 .card .card-footer {

@@ -111,4 +111,14 @@ final class GitHubRepository implements RepositoryInterface
 
         return $workflows;
     }
+
+    public function getStars(string $name): int
+    {
+        return $this->httpClient->request('GET', "https://api.github.com/repos/$name", [
+                'headers' => [
+                    'Accept' => 'application/vnd.github.v3+json',
+                    'Authorization' => "token $this->token",
+                ],
+            ])->toArray()['stargazers_count'];
+    }
 }

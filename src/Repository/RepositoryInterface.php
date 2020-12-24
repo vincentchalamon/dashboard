@@ -16,4 +16,6 @@ interface RepositoryInterface
     public function getUrl(string $name): string;
 
     public function getWorkflows(string $name): iterable;
+
+    public function getStars(string $name): int;
 }

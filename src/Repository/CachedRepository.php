@@ -24,37 +24,48 @@ final class CachedRepository implements RepositoryInterface
 
     public function exists(string $name): bool
     {
-        return $this->cache->get(sprintf('repository.%s.exists', str_replace('/', '-', $name)), function (ItemInterface $item) use ($name) {
-            $item->tag(str_replace('/', '-', $name));
-
+        return $this->getCacheItem($name, 'exists', function () use ($name) {
             return $this->decorated->exists($name);
         });
     }
 
     public function getDefaultBranch(string $name): string
     {
-        return $this->cache->get(sprintf('repository.%s.default_branch', str_replace('/', '-', $name)), function (ItemInterface $item) use ($name) {
-            $item->tag(str_replace('/', '-', $name));
-
+        return $this->getCacheItem($name, 'default_branch', function () use ($name) {
             return $this->decorated->getDefaultBranch($name);
         });
     }
 
     public function getUrl(string $name): string
     {
-        return $this->cache->get(sprintf('repository.%s.url', str_replace('/', '-', $name)), function (ItemInterface $item) use ($name) {
-            $item->tag(str_replace('/', '-', $name));
-
+        return $this->getCacheItem($name, 'url', function () use ($name) {
             return $this->decorated->getUrl($name);
         });
     }
 
     public function getWorkflows(string $name): iterable
     {
-        return $this->cache->get(sprintf('repository.%s.workflows', str_replace('/', '-', $name)), function (ItemInterface $item) use ($name) {
-            $item->tag(str_replace('/', '-', $name));
-
+        return $this->getCacheItem($name, 'workflows', function () use ($name) {
             return $this->decorated->getWorkflows($name);
         });
+    }
+
+    public function getStars(string $name): int
+    {
+        return $this->getCacheItem($name, 'stars', function () use ($name) {
+            return $this->decorated->getStars($name);
+        });
+    }
+
+    private function getCacheItem(string $name, string $suffix, callable $callback)
+    {
+        return $this->cache->get(
+            sprintf('repository.%s.%s', str_replace('/', '-', $name), $suffix),
+            function (ItemInterface $item) use ($name, $callback) {
+                $item->tag(str_replace('/', '-', $name));
+
+                return $callback();
+            }
+        );
     }
 }
