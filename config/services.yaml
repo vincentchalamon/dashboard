@@ -38,3 +38,4 @@ services:
 
     App\Repository\CachedRepository:
         decorates: 'App\Repository\GitHubRepository'
+        tags: ['kernel.cache_warmer']

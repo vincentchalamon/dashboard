@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace App\Twig;
 
-use Symfony\Component\Yaml\Exception\ParseException;
-use Symfony\Component\Yaml\Yaml;
+use App\Loader\LoaderInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -14,11 +13,11 @@ use Twig\TwigFunction;
  */
 final class RepositoryExtension extends AbstractExtension
 {
-    private string $projectDir;
+    private LoaderInterface $loader;
 
-    public function __construct(string $projectDir)
+    public function __construct(LoaderInterface $loader)
     {
-        $this->projectDir = $projectDir;
+        $this->loader = $loader;
     }
 
     /**
@@ -31,17 +30,8 @@ final class RepositoryExtension extends AbstractExtension
         ];
     }
 
-    /**
-     * @SuppressWarnings("PHPMD.StaticAccess")
-     */
     public function getRepositories(): array
     {
-        try {
-            return array_map(function (string $repository) {
-                return preg_replace('/^https:\/\/[^\/]+\/(.*)(?:\.git|\/)?$/', '$1', $repository);
-            }, Yaml::parseFile("$this->projectDir/repositories.yaml")['repositories'] ?? []);
-        } catch (ParseException $exception) {
-            return [];
-        }
+        return $this->loader->load();
     }
 }
