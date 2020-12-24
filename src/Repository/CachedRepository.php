@@ -57,6 +57,9 @@ final class CachedRepository implements RepositoryInterface
         });
     }
 
+    /**
+     * @return mixed
+     */
     private function getCacheItem(string $name, string $suffix, callable $callback)
     {
         return $this->cache->get(

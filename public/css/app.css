@@ -95,6 +95,8 @@ code {
 
 .container {
     max-width: 130rem;
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .card {
@@ -104,9 +106,6 @@ code {
     background: #0c2837;
     border-radius: 7px;
     border: thin solid rgba(255, 255, 255, 0.1);
-    float: left;
-    position: relative;
-    height: 245px;
 }
 
 .card .title {
@@ -120,7 +119,7 @@ code {
     width: 100%;
     display: inline-block;
     white-space: nowrap;
-    overflow: hidden !important;
+    overflow: hidden;
     text-overflow: ellipsis;
 }
 
@@ -139,7 +138,7 @@ code {
     display: inline-block;
     max-width: 92%;
     white-space: nowrap;
-    overflow: hidden !important;
+    overflow: hidden;
     text-overflow: ellipsis;
 }
 
@@ -163,9 +162,7 @@ code {
 
 .card .card-footer {
     width: 95%;
-    position: absolute;
-    bottom: 0;
-    left: 2.5%;
+    margin: 0 auto;
     padding: 10px 0;
     border-top: thin solid rgba(255, 255, 255, 0.2);
 }
