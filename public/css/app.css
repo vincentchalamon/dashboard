@@ -27,7 +27,7 @@ code {
 
 .loader {
     font-size: 10px;
-    margin: 50px auto 0;
+    margin: 47px auto;
     text-indent: -9999em;
     width: 5em;
     height: 5em;
@@ -95,6 +95,8 @@ code {
 
 .container {
     max-width: 130rem;
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .card {
@@ -104,9 +106,6 @@ code {
     background: #0c2837;
     border-radius: 7px;
     border: thin solid rgba(255, 255, 255, 0.1);
-    float: left;
-    position: relative;
-    height: 245px;
 }
 
 .card .title {
@@ -120,7 +119,7 @@ code {
     width: 100%;
     display: inline-block;
     white-space: nowrap;
-    overflow: hidden !important;
+    overflow: hidden;
     text-overflow: ellipsis;
 }
 
@@ -135,32 +134,23 @@ code {
     font-size: 14px;
 }
 
-.card .card-content a {
+.card .card-content a, .card .card-content span {
     display: inline-block;
     max-width: 92%;
     white-space: nowrap;
-    overflow: hidden !important;
+    overflow: hidden;
     text-overflow: ellipsis;
 }
 
 .card .card-content svg {
     display: inline-block;
     font-size: 12pt;
-}
-
-.card .card-content svg.github {
     margin: 0 5px 4px 0;
-}
-
-.card .card-content svg.branch {
-    margin: 0 5px -3px 0;
 }
 
 .card .card-footer {
     width: 95%;
-    position: absolute;
-    bottom: 0;
-    left: 2.5%;
+    margin: 0 auto;
     padding: 10px 0;
     border-top: thin solid rgba(255, 255, 255, 0.2);
 }

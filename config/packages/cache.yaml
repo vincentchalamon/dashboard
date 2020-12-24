@@ -15,8 +15,3 @@ framework:
         #app: cache.adapter.apcu
 
         # Namespaced pools use the above "app" backend by default
-        pools:
-            repositories.cache:
-                adapter: cache.adapter.redis
-                provider: '%env(resolve:REDIS_URL)%'
-                default_lifetime: '1 hour'

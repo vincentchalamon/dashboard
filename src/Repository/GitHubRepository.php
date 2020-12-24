@@ -16,7 +16,7 @@ final class GitHubRepository implements RepositoryInterface
 
     private HttpClientInterface $httpClient;
     private string $token;
-    private ?string $defaultBranch = null;
+    private array $repositories = [];
 
     public function __construct(HttpClientInterface $httpClient, string $token)
     {
@@ -27,12 +27,7 @@ final class GitHubRepository implements RepositoryInterface
     public function exists(string $name): bool
     {
         try {
-            $this->httpClient->request('GET', sprintf('%s/repos/%s', self::API_URL, $name), [
-                'headers' => [
-                    'Accept' => 'application/vnd.github.v3+json',
-                    'Authorization' => "token $this->token",
-                ],
-            ])->toArray();
+            $this->initialize($name);
 
             return true;
         } catch (ExceptionInterface $exception) {
@@ -40,21 +35,11 @@ final class GitHubRepository implements RepositoryInterface
         }
     }
 
-    /**
-     * @throws ExceptionInterface
-     */
     public function getDefaultBranch(string $name): string
     {
-        if (null === $this->defaultBranch) {
-            $this->defaultBranch = $this->httpClient->request('GET', "https://api.github.com/repos/$name", [
-                    'headers' => [
-                        'Accept' => 'application/vnd.github.v3+json',
-                        'Authorization' => "token $this->token",
-                    ],
-                ])->toArray()['default_branch'] ?? 'main';
-        }
+        $this->initialize($name);
 
-        return $this->defaultBranch;
+        return $this->repositories[$name]['default_branch'];
     }
 
     public function getUrl(string $name): string
@@ -64,24 +49,27 @@ final class GitHubRepository implements RepositoryInterface
 
     public function getWorkflows(string $name): iterable
     {
+        if (!empty($this->repositories[$name]['workflows'])) {
+            return $this->repositories[$name]['workflows'];
+        }
+
         // List workflows
         try {
             $collection = $this->httpClient->request(
-                'GET',
-                sprintf('%s/repos/%s/actions/workflows?branch=%s', self::API_URL, $name, $this->getDefaultBranch($name)),
-                [
-                    'headers' => [
-                        'Accept' => 'application/vnd.github.v3+json',
-                        'Authorization' => "token $this->token",
-                    ],
-                ]
-            )->toArray()['workflows'] ?? [];
+                    'GET',
+                    sprintf('%s/repos/%s/actions/workflows?branch=%s', self::API_URL, $name, $this->getDefaultBranch($name)),
+                    [
+                        'headers' => [
+                            'Accept' => 'application/vnd.github.v3+json',
+                            'Authorization' => "token $this->token",
+                        ],
+                    ]
+                )->toArray()['workflows'] ?? [];
         } catch (ExceptionInterface $exception) {
             return [];
         }
 
         // Get workflows status
-        $workflows = [];
         foreach ($collection as $item) {
             if (empty($item['path']) || 'active' !== $item['state']) {
                 continue;
@@ -106,9 +94,33 @@ final class GitHubRepository implements RepositoryInterface
                 continue;
             }
 
-            $workflows[$item['id']] = $runs;
+            $this->repositories[$name]['workflows'][$item['id']] = $runs;
         }
 
-        return $workflows;
+        return $this->repositories[$name]['workflows'];
+    }
+
+    public function getStars(string $name): int
+    {
+        $this->initialize($name);
+
+        return $this->repositories[$name]['stargazers_count'];
+    }
+
+    /**
+     * @throws ExceptionInterface
+     */
+    private function initialize(string $name): void
+    {
+        if (!empty($this->repositories[$name])) {
+            return;
+        }
+
+        $this->repositories[$name] = $this->httpClient->request('GET', "https://api.github.com/repos/$name", [
+            'headers' => [
+                'Accept' => 'application/vnd.github.v3+json',
+                'Authorization' => "token $this->token",
+            ],
+        ])->toArray();
     }
 }

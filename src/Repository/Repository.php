@@ -10,6 +10,7 @@ namespace App\Repository;
  * @method string   getDefaultBranch()
  * @method string   getUrl()
  * @method iterable getWorkflows()
+ * @method int      getStars()
  */
 final class Repository
 {
