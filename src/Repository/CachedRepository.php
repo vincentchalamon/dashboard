@@ -19,10 +19,10 @@ final class CachedRepository implements RepositoryInterface, CacheWarmerInterfac
     private CacheInterface $cache;
     private LoaderInterface $loader;
 
-    public function __construct(RepositoryInterface $decorated, TagAwareCacheInterface $cache, LoaderInterface $loader)
+    public function __construct(RepositoryInterface $decorated, TagAwareCacheInterface $cacheRepository, LoaderInterface $loader)
     {
         $this->decorated = $decorated;
-        $this->cache = $cache;
+        $this->cache = $cacheRepository;
         $this->loader = $loader;
     }
 
