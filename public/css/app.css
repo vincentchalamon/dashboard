@@ -1,12 +1,12 @@
 html {
     background: #0c2837;
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#0c2837), color-stop(100%,#17384c));
-    background: -webkit-linear-gradient(top,  #0c2837 0%, #17384c 100%);
-    background:    -moz-linear-gradient(top,  #0c2837 0%, #17384c 100%);
-    background:     -ms-linear-gradient(top,  #0c2837 0%, #17384c 100%);
-    background:      -o-linear-gradient(top,  #0c2837 0%, #17384c 100%);
-    background:         linear-gradient(to bottom, #0c2837 0%, #17384c 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0c2837', endColorstr='#17384c',GradientType=0 );
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #0c2837), color-stop(100%, #17384c));
+    background: -webkit-linear-gradient(top, #0c2837 0%, #17384c 100%);
+    background: -moz-linear-gradient(top, #0c2837 0%, #17384c 100%);
+    background: -ms-linear-gradient(top, #0c2837 0%, #17384c 100%);
+    background: -o-linear-gradient(top, #0c2837 0%, #17384c 100%);
+    background: linear-gradient(to bottom, #0c2837 0%, #17384c 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#0c2837', endColorstr='#17384c', GradientType=0);
     background-attachment: fixed;
 }
 
@@ -93,10 +93,48 @@ code {
     }
 }
 
+.cache-clear {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.cache-clear svg {
+    -webkit-animation: none;
+    -moz-animation: none;
+    animation: none;
+}
+
+.cache-clear.refresh svg {
+    -webkit-animation: spin 2s linear infinite;
+    -moz-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
+}
+
+@-moz-keyframes spin {
+    100% {
+        -moz-transform: rotate(-360deg);
+    }
+}
+
+@-webkit-keyframes spin {
+    100% {
+        -webkit-transform: rotate(-360deg);
+    }
+}
+
+@keyframes spin {
+    100% {
+        -webkit-transform: rotate(-360deg);
+        transform: rotate(-360deg);
+    }
+}
+
 .container {
     max-width: 130rem;
     display: flex;
     flex-wrap: wrap;
+    padding-top: 50px;
 }
 
 .card {

@@ -15,7 +15,7 @@ use Twig\Environment;
 final class RepositoryController
 {
     /**
-     * @Route("/{name}", condition="request.isXmlHttpRequest()", requirements={"name"=".+"})
+     * @Route("/{name}", condition="request.isXmlHttpRequest()", requirements={"name"=".+"}, name="app.repository")
      */
     public function __invoke(Environment $twig, RepositoryInterface $repository, string $name): Response
     {
