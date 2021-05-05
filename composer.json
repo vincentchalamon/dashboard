@@ -32,7 +32,6 @@
         "phpstan/phpstan": "^0.12.64",
         "phpstan/phpstan-deprecation-rules": "^0.12.6",
         "phpstan/phpstan-symfony": "^0.12.12",
-        "sensiolabs/security-checker": "^6.0",
         "symfony/debug-bundle": "^5.2",
         "symfony/maker-bundle": "^1.0",
         "symfony/var-dumper": "^5.2",
@@ -75,8 +74,7 @@
         ],
         "auto-scripts": {
             "cache:clear": "symfony-cmd",
-            "assets:install %PUBLIC_DIR%": "symfony-cmd",
-            "security-checker security:check": "script"
+            "assets:install %PUBLIC_DIR%": "symfony-cmd"
         },
         "post-install-cmd": [
             "@auto-scripts"
