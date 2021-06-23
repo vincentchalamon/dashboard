@@ -8,7 +8,7 @@ This project provides a dashboard to follow GitHub repositories workflows.
 
 # Requirements
 
-- [PHP](https://www.php.net/) >= 7.4
+- [PHP](https://www.php.net/) >= 8.0
 - [Symfony](https://symfony.com/download)
 - [GitHub Personal Access Token](https://github.com/settings/tokens/new?scopes=repo&description=GitHub+Dashboard)
 
