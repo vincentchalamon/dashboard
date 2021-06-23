@@ -14,7 +14,7 @@ env:
 
 jobs:
   tests:
-    name: PHP-CS-Fixer
+    name: Tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -51,4 +51,4 @@ jobs:
       - name: Run Linter analysis
         run: bin/console lint:yaml config --parse-tags
       - name: Run Rector analysis
-        run: vendor/bin/rector process
+        run: vendor/bin/rector process --dry-run

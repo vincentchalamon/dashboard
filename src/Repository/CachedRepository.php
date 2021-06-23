@@ -6,7 +6,6 @@ namespace App\Repository;
 
 use App\Loader\LoaderInterface;
 use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
-use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\Cache\TagAwareCacheInterface;
 
@@ -15,15 +14,8 @@ use Symfony\Contracts\Cache\TagAwareCacheInterface;
  */
 final class CachedRepository implements RepositoryInterface, CacheWarmerInterface
 {
-    private RepositoryInterface $decorated;
-    private CacheInterface $cache;
-    private LoaderInterface $loader;
-
-    public function __construct(RepositoryInterface $decorated, TagAwareCacheInterface $cacheRepository, LoaderInterface $loader)
+    public function __construct(private RepositoryInterface $decorated, private TagAwareCacheInterface $cache, private LoaderInterface $loader)
     {
-        $this->decorated = $decorated;
-        $this->cache = $cacheRepository;
-        $this->loader = $loader;
     }
 
     public function exists(string $name): bool

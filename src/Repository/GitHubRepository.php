@@ -13,15 +13,10 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 final class GitHubRepository implements RepositoryInterface
 {
     private const API_URL = 'https://api.github.com';
-
-    private HttpClientInterface $httpClient;
-    private string $token;
     private array $repositories = [];
 
-    public function __construct(HttpClientInterface $httpClient, string $token)
+    public function __construct(private HttpClientInterface $httpClient, private string $token)
     {
-        $this->httpClient = $httpClient;
-        $this->token = $token;
     }
 
     public function exists(string $name): bool
@@ -30,7 +25,7 @@ final class GitHubRepository implements RepositoryInterface
             $this->initialize($name);
 
             return true;
-        } catch (ExceptionInterface $exception) {
+        } catch (ExceptionInterface) {
             return false;
         }
     }
@@ -65,7 +60,7 @@ final class GitHubRepository implements RepositoryInterface
                         ],
                     ]
                 )->toArray()['workflows'] ?? [];
-        } catch (ExceptionInterface $exception) {
+        } catch (ExceptionInterface) {
             return [];
         }
 
@@ -90,7 +85,7 @@ final class GitHubRepository implements RepositoryInterface
                     0,
                     10
                 ));
-            } catch (ExceptionInterface $exception) {
+            } catch (ExceptionInterface) {
                 continue;
             }
 

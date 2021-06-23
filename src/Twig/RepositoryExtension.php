@@ -13,11 +13,8 @@ use Twig\TwigFunction;
  */
 final class RepositoryExtension extends AbstractExtension
 {
-    private LoaderInterface $loader;
-
-    public function __construct(LoaderInterface $loader)
+    public function __construct(private LoaderInterface $loader)
     {
-        $this->loader = $loader;
     }
 
     /**
@@ -26,7 +23,9 @@ final class RepositoryExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('getRepositories', [$this, 'getRepositories']),
+            new TwigFunction('getRepositories', function (): array {
+                return $this->getRepositories();
+            }),
         ];
     }
 

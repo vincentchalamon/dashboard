@@ -14,13 +14,8 @@ namespace App\Repository;
  */
 final class Repository
 {
-    private RepositoryInterface $repository;
-    private string $name;
-
-    public function __construct(RepositoryInterface $repository, string $name)
+    public function __construct(private RepositoryInterface $repository, private string $name)
     {
-        $this->repository = $repository;
-        $this->name = $name;
     }
 
     public function getName(): string

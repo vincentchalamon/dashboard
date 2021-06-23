@@ -11,9 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 final class CacheController
 {
-    /**
-     * @Route("/clear-cache", condition="request.isXmlHttpRequest()", name="app.cache")
-     */
+    #[Route(path: '/clear-cache', condition: 'request.isXmlHttpRequest()', name: 'app.cache')]
     public function __invoke(Psr6CacheClearer $poolClearer): Response
     {
         $poolClearer->clearPool('cache.repository');

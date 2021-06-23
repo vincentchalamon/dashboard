@@ -12,12 +12,10 @@ use Symfony\Component\Yaml\Yaml;
  */
 final class RepositoryLoader implements LoaderInterface
 {
-    private string $projectDir;
     private ?array $repositories = null;
 
-    public function __construct(string $projectDir)
+    public function __construct(private string $projectDir)
     {
-        $this->projectDir = $projectDir;
     }
 
     /**
@@ -30,7 +28,7 @@ final class RepositoryLoader implements LoaderInterface
                 $this->repositories = array_map(function (string $repository) {
                     return preg_replace('/^https:\/\/[^\/]+\/(.*)(?:\.git|\/)?$/', '$1', $repository);
                 }, Yaml::parseFile("$this->projectDir/repositories.yaml")['repositories'] ?? []);
-            } catch (ParseException $exception) {
+            } catch (ParseException) {
                 $this->repositories = [];
             }
         }
