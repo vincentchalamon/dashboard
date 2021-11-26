@@ -23,7 +23,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: 8.0
-          tools: composer:v2, flex, php-cs-fixer, phpstan, phpmd
+          tools: composer:v2, flex, php-cs-fixer, phpmd
       - name: Get Composer Cache Directory
         id: composer-cache
         run: echo "::set-output name=dir::$(composer config cache-files-dir)"
@@ -38,17 +38,11 @@ jobs:
         run: composer install --prefer-dist --no-scripts --no-progress
       - name: Run PHP-CS-Fixer analysis
         run: php-cs-fixer fix --ansi --dry-run --diff
-      - name: Cache PHPStan
-        uses: actions/cache@v2
-        with:
-          path: .phpstan/
-          key: phpstan-${{ github.sha }}
-          restore-keys: phpstan-
-      - name: Run PHPStan analysis
-        run: phpstan analyze
       - name: Run PHP Mess Detector analysis
         run: phpmd src text phpmd.xml
       - name: Run Linter analysis
-        run: bin/console lint:yaml config --parse-tags
+        run: |
+          bin/console lint:yaml config --parse-tags
+          bin/console lint:container
       - name: Run Rector analysis
         run: vendor/bin/rector process --dry-run
