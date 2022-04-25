@@ -15,7 +15,7 @@ final class GitHubRepository implements RepositoryInterface
     private const API_URL = 'https://api.github.com';
     private array $repositories = [];
 
-    public function __construct(private HttpClientInterface $httpClient, private string $token)
+    public function __construct(private readonly HttpClientInterface $httpClient, private readonly string $token)
     {
     }
 

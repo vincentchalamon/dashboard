@@ -14,7 +14,7 @@ namespace App\Repository;
  */
 final class Repository
 {
-    public function __construct(private RepositoryInterface $repository, private string $name)
+    public function __construct(private readonly RepositoryInterface $repository, private readonly string $name)
     {
     }
 

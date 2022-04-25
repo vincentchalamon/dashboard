@@ -14,7 +14,7 @@ final class RepositoryLoader implements LoaderInterface
 {
     private ?array $repositories = null;
 
-    public function __construct(private string $projectDir)
+    public function __construct(private readonly string $projectDir)
     {
     }
 
@@ -25,9 +25,9 @@ final class RepositoryLoader implements LoaderInterface
     {
         if (null === $this->repositories) {
             try {
-                $this->repositories = array_map(function (string $repository) {
+                $this->repositories = array_map(function (string $repository) { /* @phpstan-ignore-line */
                     return preg_replace('/^https:\/\/[^\/]+\/(.*)(?:\.git|\/)?$/', '$1', $repository);
-                }, Yaml::parseFile("$this->projectDir/repositories.yaml")['repositories'] ?? []);
+                }, Yaml::parseFile("$this->projectDir/repositories.yaml")['repositories'] ?? []); /* @phpstan-ignore-line */
             } catch (ParseException) {
                 $this->repositories = [];
             }

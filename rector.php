@@ -22,16 +22,16 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         __DIR__.'/vendor',
     ]);
 
-    $parameters->set(Option::PHP_VERSION_FEATURES, PhpVersion::PHP_80);
+    $parameters->set(Option::PHP_VERSION_FEATURES, PhpVersion::PHP_81);
     $parameters->set(
         Option::SYMFONY_CONTAINER_XML_PATH_PARAMETER,
         __DIR__.'/var/cache/dev/App_KernelDevDebugContainer.xml'
     );
 
     // Define what rule sets will be applied
-    $containerConfigurator->import(SetList::PHP_80);
+    $containerConfigurator->import(SetList::PHP_81);
     $containerConfigurator->import(SetList::CODE_QUALITY);
     $containerConfigurator->import(SetList::DEAD_CODE);
-    $containerConfigurator->import(SymfonySetList::SYMFONY_52);
+    $containerConfigurator->import(SymfonySetList::SYMFONY_60);
     $containerConfigurator->import(PHPUnitSetList::PHPUNIT_91);
 };

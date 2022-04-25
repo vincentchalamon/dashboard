@@ -14,41 +14,41 @@ use Symfony\Contracts\Cache\TagAwareCacheInterface;
  */
 final class CachedRepository implements RepositoryInterface, CacheWarmerInterface
 {
-    public function __construct(private RepositoryInterface $decorated, private TagAwareCacheInterface $cache, private LoaderInterface $loader)
+    public function __construct(private readonly RepositoryInterface $decorated, private readonly TagAwareCacheInterface $cache, private readonly LoaderInterface $loader)
     {
     }
 
     public function exists(string $name): bool
     {
-        return $this->getCacheItem($name, 'exists', function () use ($name) {
+        return $this->getCacheItem($name, 'exists', function () use ($name) { /* @phpstan-ignore-line */
             return $this->decorated->exists($name);
         });
     }
 
     public function getDefaultBranch(string $name): string
     {
-        return $this->getCacheItem($name, 'defaultBranch', function () use ($name) {
+        return $this->getCacheItem($name, 'defaultBranch', function () use ($name) { /* @phpstan-ignore-line */
             return $this->decorated->getDefaultBranch($name);
         });
     }
 
     public function getUrl(string $name): string
     {
-        return $this->getCacheItem($name, 'url', function () use ($name) {
+        return $this->getCacheItem($name, 'url', function () use ($name) { /* @phpstan-ignore-line */
             return $this->decorated->getUrl($name);
         });
     }
 
     public function getWorkflows(string $name): iterable
     {
-        return $this->getCacheItem($name, 'workflows', function () use ($name) {
+        return $this->getCacheItem($name, 'workflows', function () use ($name) { /* @phpstan-ignore-line */
             return $this->decorated->getWorkflows($name);
         });
     }
 
     public function getStars(string $name): int
     {
-        return $this->getCacheItem($name, 'stars', function () use ($name) {
+        return $this->getCacheItem($name, 'stars', function () use ($name) { /* @phpstan-ignore-line */
             return $this->decorated->getStars($name);
         });
     }
@@ -64,7 +64,7 @@ final class CachedRepository implements RepositoryInterface, CacheWarmerInterfac
     /**
      * {@inheritdoc}
      */
-    public function warmUp(string $cacheDir)
+    public function warmUp(string $cacheDir): array
     {
         foreach ($this->loader->load() as $repository) {
             foreach (['exists', 'defaultBranch', 'url', 'workflows', 'stars'] as $method) {
