@@ -12,7 +12,11 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
  */
 final class GitHubRepository implements RepositoryInterface
 {
+    /**
+     * @var string
+     */
     private const API_URL = 'https://api.github.com';
+
     private array $repositories = [];
 
     public function __construct(private readonly HttpClientInterface $httpClient, private readonly string $token)
@@ -39,7 +43,7 @@ final class GitHubRepository implements RepositoryInterface
 
     public function getUrl(string $name): string
     {
-        return "https://github.com/$name";
+        return sprintf('https://github.com/%s', $name);
     }
 
     public function getWorkflows(string $name): iterable
@@ -56,7 +60,7 @@ final class GitHubRepository implements RepositoryInterface
                     [
                         'headers' => [
                             'Accept' => 'application/vnd.github.v3+json',
-                            'Authorization' => "token $this->token",
+                            'Authorization' => sprintf('token %s', $this->token),
                         ],
                     ]
                 )->toArray()['workflows'] ?? [];
@@ -66,7 +70,15 @@ final class GitHubRepository implements RepositoryInterface
 
         // Get workflows status
         foreach ($collection as $item) {
-            if (empty($item['path']) || 'active' !== $item['state']) {
+            if (empty($item['path'])) {
+                continue;
+            }
+
+            if (empty($item['name'])) {
+                continue;
+            }
+
+            if ('active' !== $item['state']) {
                 continue;
             }
 
@@ -78,7 +90,7 @@ final class GitHubRepository implements RepositoryInterface
                         [
                             'headers' => [
                                 'Accept' => 'application/vnd.github.v3+json',
-                                'Authorization' => "token $this->token",
+                                'Authorization' => sprintf('token %s', $this->token),
                             ],
                         ]
                     )->toArray()['workflow_runs'] ?? [],
@@ -111,10 +123,10 @@ final class GitHubRepository implements RepositoryInterface
             return;
         }
 
-        $this->repositories[$name] = $this->httpClient->request('GET', "https://api.github.com/repos/$name", [
+        $this->repositories[$name] = $this->httpClient->request('GET', sprintf('https://api.github.com/repos/%s', $name), [
             'headers' => [
                 'Accept' => 'application/vnd.github.v3+json',
-                'Authorization' => "token $this->token",
+                'Authorization' => sprintf('token %s', $this->token),
             ],
         ])->toArray();
     }

@@ -9,28 +9,28 @@
         "php": ">=8.1",
         "ext-ctype": "*",
         "ext-iconv": "*",
-        "symfony/asset": "6.0.*",
-        "symfony/cache": "6.0.*",
-        "symfony/dotenv": "6.0.*",
-        "symfony/expression-language": "6.0.*",
+        "symfony/asset": "6.1.*",
+        "symfony/cache": "6.1.*",
+        "symfony/dotenv": "6.1.*",
+        "symfony/expression-language": "6.1.*",
         "symfony/flex": "^2.1",
-        "symfony/framework-bundle": "6.0.*",
-        "symfony/http-client": "6.0.*",
+        "symfony/framework-bundle": "6.1.*",
+        "symfony/http-client": "6.1.*",
         "symfony/monolog-bundle": "^3.7",
-        "symfony/runtime": "6.0.*",
-        "symfony/serializer": "6.0.*",
-        "symfony/twig-bundle": "6.0.*",
-        "symfony/web-link": "6.0.*",
-        "symfony/yaml": "6.0.*",
+        "symfony/runtime": "6.1.*",
+        "symfony/serializer": "6.1.*",
+        "symfony/twig-bundle": "6.1.*",
+        "symfony/web-link": "6.1.*",
+        "symfony/yaml": "6.1.*",
         "twig/extra-bundle": "^3.3",
         "twig/twig": "^3.3"
     },
     "require-dev": {
         "rector/rector": "^0.12.5",
-        "symfony/debug-bundle": "6.0.*",
+        "symfony/debug-bundle": "6.1.*",
         "symfony/maker-bundle": "^1.40",
-        "symfony/var-dumper": "6.0.*",
-        "symfony/web-profiler-bundle": "6.0.*"
+        "symfony/var-dumper": "6.1.*",
+        "symfony/web-profiler-bundle": "6.1.*"
     },
     "config": {
         "optimize-autoloader": true,
@@ -76,7 +76,7 @@
     "extra": {
         "symfony": {
             "allow-contrib": false,
-            "require": "6.0.*"
+            "require": "6.1.*"
         }
     }
 }

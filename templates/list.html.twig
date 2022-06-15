@@ -11,7 +11,9 @@
 
     {% for repository in getRepositories() %}
         <div class="card">
-            <h5 class="title">{{ repository }}</h5>
+            <h5 class="title">
+                <a href="https://github.com/{{ repository }}" target="_blank" title="{{ repository }}">{{ repository }}</a>
+            </h5>
             <div class="loader">Loading...</div>
         </div>
     {% else %}
@@ -55,7 +57,7 @@
 
             $('.card').on('load', function () {
                 const $this = $(this);
-                const title = $('.title', $(this)).text();
+                const title = $('.title', $(this)).text().trim();
                 $.ajax({
                     url: `/${title}`,
                     error: function () {

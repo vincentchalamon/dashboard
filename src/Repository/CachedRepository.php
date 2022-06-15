@@ -20,35 +20,35 @@ final class CachedRepository implements RepositoryInterface, CacheWarmerInterfac
 
     public function exists(string $name): bool
     {
-        return $this->getCacheItem($name, 'exists', function () use ($name) { /* @phpstan-ignore-line */
+        return $this->getCacheItem($name, 'exists', function () use ($name): bool { /* @phpstan-ignore-line */
             return $this->decorated->exists($name);
         });
     }
 
     public function getDefaultBranch(string $name): string
     {
-        return $this->getCacheItem($name, 'defaultBranch', function () use ($name) { /* @phpstan-ignore-line */
+        return $this->getCacheItem($name, 'defaultBranch', function () use ($name): string { /* @phpstan-ignore-line */
             return $this->decorated->getDefaultBranch($name);
         });
     }
 
     public function getUrl(string $name): string
     {
-        return $this->getCacheItem($name, 'url', function () use ($name) { /* @phpstan-ignore-line */
+        return $this->getCacheItem($name, 'url', function () use ($name): string { /* @phpstan-ignore-line */
             return $this->decorated->getUrl($name);
         });
     }
 
     public function getWorkflows(string $name): iterable
     {
-        return $this->getCacheItem($name, 'workflows', function () use ($name) { /* @phpstan-ignore-line */
+        return $this->getCacheItem($name, 'workflows', function () use ($name): iterable { /* @phpstan-ignore-line */
             return $this->decorated->getWorkflows($name);
         });
     }
 
     public function getStars(string $name): int
     {
-        return $this->getCacheItem($name, 'stars', function () use ($name) { /* @phpstan-ignore-line */
+        return $this->getCacheItem($name, 'stars', function () use ($name): int { /* @phpstan-ignore-line */
             return $this->decorated->getStars($name);
         });
     }

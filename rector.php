@@ -2,36 +2,38 @@
 
 declare(strict_types=1);
 
-use Rector\Core\Configuration\Option;
+use Rector\Config\RectorConfig;
 use Rector\Core\ValueObject\PhpVersion;
-use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Set\ValueObject\SetList;
 use Rector\Symfony\Set\SymfonySetList;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
-return static function (ContainerConfigurator $containerConfigurator): void {
-    // get parameters
-    $parameters = $containerConfigurator->parameters();
+return static function (RectorConfig $rectorConfig): void {
+    $rectorConfig->paths([__DIR__.'/src']);
+    $rectorConfig->phpVersion(PhpVersion::PHP_81);
+    $rectorConfig->importNames();
 
-    // paths to refactor; solid alternative to CLI arguments
-    $parameters->set(Option::PATHS, [
-        __DIR__.'/src',
+    // Generic rule
+    $rectorConfig->sets([
+        SetList::CODE_QUALITY,
+        SetList::CODING_STYLE,
+        SetList::DEAD_CODE,
+        SetList::PHP_81,
+        SetList::PSR_4,
+        SetList::TYPE_DECLARATION_STRICT,
+        SetList::EARLY_RETURN,
     ]);
-    $parameters->set(Option::SKIP, [
-        __DIR__.'/var',
-        __DIR__.'/vendor',
+
+    // Symfony
+    if (is_file(__DIR__.'/var/cache/dev/App_KernelDevDebugContainer.xml')) {
+        $rectorConfig->symfonyContainerXml(__DIR__.'/var/cache/dev/App_KernelDevDebugContainer.xml');
+    } elseif (is_file(__DIR__.'/var/cache/test/App_KernelTestDebugContainer.xml')) {
+        $rectorConfig->symfonyContainerXml(__DIR__.'/var/cache/test/App_KernelTestDebugContainer.xml');
+    }
+    $rectorConfig->sets([
+        SymfonySetList::ANNOTATIONS_TO_ATTRIBUTES,
+        SymfonySetList::SYMFONY_60,
+        SymfonySetList::SYMFONY_CODE_QUALITY,
+        SymfonySetList::SYMFONY_CONSTRUCTOR_INJECTION,
+        SymfonySetList::SYMFONY_STRICT,
     ]);
-
-    $parameters->set(Option::PHP_VERSION_FEATURES, PhpVersion::PHP_81);
-    $parameters->set(
-        Option::SYMFONY_CONTAINER_XML_PATH_PARAMETER,
-        __DIR__.'/var/cache/dev/App_KernelDevDebugContainer.xml'
-    );
-
-    // Define what rule sets will be applied
-    $containerConfigurator->import(SetList::PHP_81);
-    $containerConfigurator->import(SetList::CODE_QUALITY);
-    $containerConfigurator->import(SetList::DEAD_CODE);
-    $containerConfigurator->import(SymfonySetList::SYMFONY_60);
-    $containerConfigurator->import(PHPUnitSetList::PHPUNIT_91);
 };

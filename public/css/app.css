@@ -203,6 +203,10 @@ code {
     text-align: right;
     padding-right: 1%;
     font-size: 0.9em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow-x: hidden;
+    line-height: 15px;
 }
 
 .card .card-footer a {
