@@ -1,42 +1,50 @@
 <div class="card-content">
-    <svg viewBox="64 64 896 896" focusable="false" fill="currentColor" width="1em" height="1em" aria-hidden="true" class="branch">
-        <path d="M740 161c-61.8 0-112 50.2-112 112 0 50.1 33.1 92.6 78.5 106.9v95.9L320 602.4V318.1c44.2-15 76-56.9 76-106.1 0-61.8-50.2-112-112-112s-112 50.2-112 112c0 49.2 31.8 91 76 106.1V706c-44.2 15-76 56.9-76 106.1 0 61.8 50.2 112 112 112s112-50.2 112-112c0-49.2-31.8-91-76-106.1v-27.8l423.5-138.7a50.52 50.52 0 0034.9-48.2V378.2c42.9-15.8 73.6-57 73.6-105.2 0-61.8-50.2-112-112-112zm-504 51a48.01 48.01 0 0196 0 48.01 48.01 0 01-96 0zm96 600a48.01 48.01 0 01-96 0 48.01 48.01 0 0196 0zm408-491a48.01 48.01 0 010-96 48.01 48.01 0 010 96z"></path>
+    <svg viewBox="64 64 896 896" focusable="false" fill="currentColor" width="1em" height="1em" aria-hidden="true"
+         class="branch">
+        <path
+            d="M740 161c-61.8 0-112 50.2-112 112 0 50.1 33.1 92.6 78.5 106.9v95.9L320 602.4V318.1c44.2-15 76-56.9 76-106.1 0-61.8-50.2-112-112-112s-112 50.2-112 112c0 49.2 31.8 91 76 106.1V706c-44.2 15-76 56.9-76 106.1 0 61.8 50.2 112 112 112s112-50.2 112-112c0-49.2-31.8-91-76-106.1v-27.8l423.5-138.7a50.52 50.52 0 0034.9-48.2V378.2c42.9-15.8 73.6-57 73.6-105.2 0-61.8-50.2-112-112-112zm-504 51a48.01 48.01 0 0196 0 48.01 48.01 0 01-96 0zm96 600a48.01 48.01 0 01-96 0 48.01 48.01 0 0196 0zm408-491a48.01 48.01 0 010-96 48.01 48.01 0 010 96z"></path>
     </svg>
     <span>{{ repository.defaultBranch }}</span>
     <br/>
-    <svg viewBox="0 0 16 16" focusable="false" fill="currentColor" width="1em" height="1em" aria-hidden="true" class="star">
-        <path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"></path>
+    <svg viewBox="0 0 16 16" focusable="false" fill="currentColor" width="1em" height="1em" aria-hidden="true"
+         class="star">
+        <path
+            d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"></path>
     </svg>
-    <a href="{{ repository.url }}/stargazers" target="_blank" title="{{ repository.stars }} stars">{{ repository.stars }}</a>
+    <a href="{{ repository.url }}/stargazers" target="_blank"
+       title="{{ repository.stars }} stars">{{ repository.stars }}</a>
 </div>
 
 <div class="card-footer">
-    {% for workflow, runs in repository.workflows %}
+    {% for workflow in repository.workflows %}
         <div class="workflow">
-            {% for run in runs %}
-                {% if loop.first %}
-                    <span class="name">{{ run.name }}</span>
-                {% endif %}
+            <span class="name">{{ workflow.name }}</span>
+            {% for run in workflow.runs|reverse %}
                 <a href="{{ run.html_url }}" target="_blank">
                     {% if run.conclusion is same as 'success' %}
-                        <svg viewBox="64 64 896 896" focusable="false" class="success{{ loop.last ? ' active' : '' }}"
-                             data-icon="check-circle" width="1em" height="1em" aria-hidden="true">
-                            <path fill="rgb(82, 196, 26)"
-                                  d="M699 353h-46.9c-10.2 0-19.9 4.9-25.9 13.3L469 584.3l-71.2-98.8c-6-8.3-15.6-13.3-25.9-13.3H325c-6.5 0-10.3 7.4-6.5 12.7l124.6 172.8a31.8 31.8 0 0051.7 0l210.6-292c3.9-5.3.1-12.7-6.4-12.7z"></path>
-                            <path fill="rgb(217, 247, 190)"
-                                  d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm0 820c-205.4 0-372-166.6-372-372s166.6-372 372-372 372 166.6 372 372-166.6 372-372 372z"></path>
+                        <svg width="1em" height="1em" viewBox="0 0 20 20" aria-hidden="true"
+                             class="{{ run.conclusion }}{{ loop.last ? ' active' : '' }}">
+                            <path fill-rule="evenodd"
+                                  d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12zm16.28-2.72a.75.75 0 00-1.06-1.06l-5.97 5.97-2.47-2.47a.75.75 0 00-1.06 1.06l3 3a.75.75 0 001.06 0l6.5-6.5z"/>
+                        </svg>
+                    {% elseif run.conclusion in ['cancelled', 'failure', 'skipped'] %}
+                        <svg width="1em" height="1em" viewBox="0 0 20 20" aria-hidden="true"
+                             class="{{ run.conclusion }}{{ loop.last ? ' active' : '' }}">
+                            <path fill-rule="evenodd"
+                                  d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12zm8.036-4.024a.75.75 0 00-1.06 1.06L10.939 12l-2.963 2.963a.75.75 0 101.06 1.06L12 13.06l2.963 2.964a.75.75 0 001.061-1.06L13.061 12l2.963-2.964a.75.75 0 10-1.06-1.06L12 10.939 9.036 7.976z"/>
                         </svg>
                     {% else %}
-                        <svg viewBox="64 64 896 896" focusable="false" class="failure{{ loop.last ? ' active' : '' }}"
-                             data-icon="close-circle" width="1em" height="1em" aria-hidden="true">
-                            <path fill="rgb(245, 34, 45)"
-                                  d="M685.4 354.8c0-4.4-3.6-8-8-8l-66 .3L512 465.6l-99.3-118.4-66.1-.3c-4.4 0-8 3.5-8 8 0 1.9.7 3.7 1.9 5.2l130.1 155L340.5 670a8.32 8.32 0 00-1.9 5.2c0 4.4 3.6 8 8 8l66.1-.3L512 564.4l99.3 118.4 66 .3c4.4 0 8-3.5 8-8 0-1.9-.7-3.7-1.9-5.2L553.5 515l130.1-155c1.2-1.4 1.8-3.3 1.8-5.2z"></path>
-                            <path fill="rgb(255, 204, 199)"
-                                  d="M512 65C264.6 65 64 265.6 64 513s200.6 448 448 448 448-200.6 448-448S759.4 65 512 65zm0 820c-205.4 0-372-166.6-372-372s166.6-372 372-372 372 166.6 372 372-166.6 372-372 372z"></path>
+                        <svg width="1em" height="1em" viewBox="0 0 16 16" aria-hidden="true"
+                             class="anim-rotate{{ loop.last ? ' active' : '' }}">
+                            <path opacity=".5" d="M8 15A7 7 0 108 1a7 7 0 000 14v0z" stroke="#dbab0a" stroke-width="2"/>
+                            <path d="M15 8a7 7 0 01-7 7" stroke="#dbab0a" stroke-width="2"/>
+                            <path d="M8 12a4 4 0 100-8 4 4 0 000 8z" fill="#dbab0a"/>
                         </svg>
                     {% endif %}
                 </a>
             {% endfor %}
         </div>
+    {% else %}
+        <h4 class="error">No active workflows!</h4><p>This repository does not have any active workflow.</p>
     {% endfor %}
 </div>
