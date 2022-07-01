@@ -2,11 +2,35 @@
     "doctrine/inflector": {
         "version": "2.0.3"
     },
+    "knplabs/github-api": {
+        "version": "3.7",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "2.6",
+            "ref": "a7d5781e4a8e84f1c238c43e4c9bb806f01d8a3f"
+        },
+        "files": [
+            "config/packages/github_api.yaml"
+        ]
+    },
     "monolog/monolog": {
         "version": "2.3.1"
     },
     "nikic/php-parser": {
         "version": "v4.11.0"
+    },
+    "nyholm/psr7": {
+        "version": "1.5",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "1.0",
+            "ref": "0cd4d2d0e7f646fda75f9944f747a56e6ed13d4c"
+        },
+        "files": [
+            "config/packages/nyholm_psr7.yaml"
+        ]
     },
     "phpstan/phpstan": {
         "version": "0.12.91"

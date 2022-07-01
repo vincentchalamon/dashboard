@@ -4,22 +4,18 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
-use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Github\Client as GitHubClient;
+use Psr\Http\Client\ClientExceptionInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * @author Vincent Chalamon <vincentchalamon@gmail.com>
  */
 final class GitHubRepository implements RepositoryInterface
 {
-    /**
-     * @var string
-     */
-    private const API_URL = 'https://api.github.com';
-
     private array $repositories = [];
 
-    public function __construct(private readonly HttpClientInterface $httpClient, private readonly string $token)
+    public function __construct(private readonly GitHubClient $client, private readonly LoggerInterface $logger)
     {
     }
 
@@ -29,7 +25,7 @@ final class GitHubRepository implements RepositoryInterface
             $this->initialize($name);
 
             return true;
-        } catch (ExceptionInterface) {
+        } catch (ClientExceptionInterface) {
             return false;
         }
     }
@@ -48,60 +44,46 @@ final class GitHubRepository implements RepositoryInterface
 
     public function getWorkflows(string $name): iterable
     {
-        if (!empty($this->repositories[$name]['workflows'])) {
+        $this->initialize($name);
+
+        if (array_key_exists('workflows', $this->repositories[$name])) {
             return $this->repositories[$name]['workflows'];
         }
 
+        $this->repositories[$name]['workflows'] = [];
+        list($org, $repo) = explode('/', $name);
+
         // List workflows
         try {
-            $collection = $this->httpClient->request(
-                    'GET',
-                    sprintf('%s/repos/%s/actions/workflows?branch=%s', self::API_URL, $name, $this->getDefaultBranch($name)),
-                    [
-                        'headers' => [
-                            'Accept' => 'application/vnd.github.v3+json',
-                            'Authorization' => sprintf('token %s', $this->token),
-                        ],
-                    ]
-                )->toArray()['workflows'] ?? [];
-        } catch (ExceptionInterface) {
+            $workflows = $this->client->api('repo')->workflows()->all($org, $repo)['workflows'];
+        } catch (ClientExceptionInterface $clientException) {
+            $this->logger->error($clientException->getMessage());
+
             return [];
         }
 
-        // Get workflows status
-        foreach ($collection as $item) {
-            if (empty($item['path'])) {
+        // Get workflows runs
+        foreach ($workflows as $workflow) {
+            if (empty($workflow['name'])) {
                 continue;
             }
 
-            if (empty($item['name'])) {
-                continue;
-            }
-
-            if ('active' !== $item['state']) {
+            if ('active' !== $workflow['state']) {
                 continue;
             }
 
             try {
-                $runs = array_reverse(array_slice(
-                    $this->httpClient->request(
-                        'GET',
-                        sprintf('%s/repos/%s/actions/workflows/%d/runs?branch=%s', self::API_URL, $name, $item['id'], $this->getDefaultBranch($name)),
-                        [
-                            'headers' => [
-                                'Accept' => 'application/vnd.github.v3+json',
-                                'Authorization' => sprintf('token %s', $this->token),
-                            ],
-                        ]
-                    )->toArray()['workflow_runs'] ?? [],
-                    0,
-                    10
-                ));
-            } catch (ExceptionInterface) {
+                $runs = array_map(
+                    fn (array $run): array => array_intersect_key($run, array_flip(['html_url', 'conclusion', 'updated_at'])),
+                    $this->client->api('repo')->workflowRuns()->listRuns($org, $repo, (string) $workflow['id'], ['per_page' => 10])['workflow_runs']
+                );
+            } catch (ClientExceptionInterface $clientException) {
+                $this->logger->error($clientException->getMessage());
+
                 continue;
             }
 
-            $this->repositories[$name]['workflows'][$item['id']] = $runs;
+            $this->repositories[$name]['workflows'][$workflow['id']] = ['name' => $workflow['name'], 'runs' => $runs];
         }
 
         return $this->repositories[$name]['workflows'];
@@ -115,7 +97,7 @@ final class GitHubRepository implements RepositoryInterface
     }
 
     /**
-     * @throws ExceptionInterface
+     * @throws ClientExceptionInterface
      */
     private function initialize(string $name): void
     {
@@ -123,11 +105,11 @@ final class GitHubRepository implements RepositoryInterface
             return;
         }
 
-        $this->repositories[$name] = $this->httpClient->request('GET', sprintf('https://api.github.com/repos/%s', $name), [
-            'headers' => [
-                'Accept' => 'application/vnd.github.v3+json',
-                'Authorization' => sprintf('token %s', $this->token),
-            ],
-        ])->toArray();
+        list($org, $repo) = explode('/', $name);
+
+        $this->repositories[$name] = array_intersect_key(
+            $this->client->api('repo')->show($org, $repo),
+            array_flip(['default_branch', 'stargazers_count'])
+        );
     }
 }

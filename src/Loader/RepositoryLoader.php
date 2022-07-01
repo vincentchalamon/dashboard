@@ -25,9 +25,20 @@ final class RepositoryLoader implements LoaderInterface
     {
         if (null === $this->repositories) {
             try {
-                $this->repositories = array_map(function (string $repository): ?string { /* @phpstan-ignore-line */
-                    return preg_replace('#^https:\/\/[^\/]+\/(.*)(?:\.git|\/)?$#', '$1', $repository);
-                }, Yaml::parseFile(sprintf('%s/repositories.yaml', $this->projectDir))['repositories'] ?? []); /* @phpstan-ignore-line */
+                $repositories = Yaml::parseFile(sprintf('%s/repositories.yaml', $this->projectDir))['repositories'] ?? [];
+
+                // Detect if groups aren't used in repositories declaration
+                if (array_keys($repositories) === range(0, count($repositories) - 1)) {
+                    $repositories = ['Default' => $repositories];
+                }
+
+                $this->repositories = array_map(
+                    fn ($repositories): array => array_map(
+                        fn (string $repository): string => preg_replace('#^https:\/\/[^\/]+\/(.*)(?:\.git|\/)?$#', '$1', $repository),
+                        $repositories
+                    ),
+                    $repositories
+                );
             } catch (ParseException) {
                 $this->repositories = [];
             }
