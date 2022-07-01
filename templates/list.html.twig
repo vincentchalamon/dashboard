@@ -9,13 +9,25 @@
         </a>
     {% endif %}
 
-    {% for repository in getRepositories() %}
-        <div class="card">
-            <h5 class="title">
-                <a href="https://github.com/{{ repository }}" target="_blank" title="{{ repository }}">{{ repository }}</a>
-            </h5>
-            <div class="loader">Loading...</div>
-        </div>
+    {% for group, repositories in getRepositories() %}
+        {% if 'Default' != group %}
+            <h3 class="group-title{{ loop.first ? ' first' : '' }}">{{ group }}</h3>
+        {% endif %}
+        {% for repository in repositories %}
+            <div class="card">
+                <h5 class="title">
+                    <a href="https://github.com/{{ repository }}" target="_blank" title="{{ repository }}">{{ repository }}</a>
+                </h5>
+                <div class="loader">Loading...</div>
+            </div>
+        {% else %}
+            <h3>You don't follow any repository in this group!</h3>
+            <p>Start following GitHub repositories by adding them in the "repositories.yaml" file:</p>
+            <pre><code>repositories:
+  {{ group }}:
+    - https://github.com/api-platform/demo/
+    - https://github.com/GregoireHebert/docusign-bundle/</code></pre>
+        {% endfor %}
     {% else %}
         <h3>You don't follow any repository!</h3>
         <p>Start following GitHub repositories by adding them in the "repositories.yaml" file:</p>

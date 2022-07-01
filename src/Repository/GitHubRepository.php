@@ -56,15 +56,19 @@ final class GitHubRepository implements RepositoryInterface
         // List workflows
         try {
             $workflows = $this->client->api('repo')->workflows()->all($org, $repo)['workflows'];
-        } catch (ClientExceptionInterface $e) {
-            $this->logger->error($e->getMessage());
+        } catch (ClientExceptionInterface $clientException) {
+            $this->logger->error($clientException->getMessage());
 
             return [];
         }
 
         // Get workflows runs
         foreach ($workflows as $workflow) {
-            if (empty($workflow['name']) || 'active' !== $workflow['state']) {
+            if (empty($workflow['name'])) {
+                continue;
+            }
+
+            if ('active' !== $workflow['state']) {
                 continue;
             }
 
@@ -73,8 +77,8 @@ final class GitHubRepository implements RepositoryInterface
                     fn (array $run): array => array_intersect_key($run, array_flip(['html_url', 'conclusion', 'updated_at'])),
                     $this->client->api('repo')->workflowRuns()->listRuns($org, $repo, (string) $workflow['id'], ['per_page' => 10])['workflow_runs']
                 );
-            } catch (ClientExceptionInterface $e) {
-                $this->logger->error($e->getMessage());
+            } catch (ClientExceptionInterface $clientException) {
+                $this->logger->error($clientException->getMessage());
 
                 continue;
             }
@@ -82,7 +86,6 @@ final class GitHubRepository implements RepositoryInterface
             $this->repositories[$name]['workflows'][$workflow['id']] = ['name' => $workflow['name'], 'runs' => $runs];
         }
 
-        dump($this->repositories[$name]['workflows']);
         return $this->repositories[$name]['workflows'];
     }
 

@@ -35,8 +35,10 @@ Create the `repositories.yaml` file at the root of your project, as following:
 
 ```yaml
 repositories:
-  - https://github.com/api-platform/demo/
-  - https://github.com/GregoireHebert/docusign-bundle/
+  Default:
+    - https://github.com/GregoireHebert/docusign-bundle/
+  API Platform:
+    - https://github.com/api-platform/demo/
 ```
 
 _Note: to prevent too many requests to the GitHub API, data are stored in cache. To refresh them, just clear the pool:_
