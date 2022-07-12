@@ -17,5 +17,5 @@ framework:
         # Namespaced pools use the above "app" backend by default
         pools:
             cache.repository:
-                adapter: cache.app
+                adapter: cache.adapter.filesystem
                 default_lifetime: '1 week'

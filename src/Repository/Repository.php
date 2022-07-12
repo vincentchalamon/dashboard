@@ -23,10 +23,7 @@ final class Repository
         return $this->name;
     }
 
-    /**
-     * @return false|mixed
-     */
-    public function __call(string $method, array $arguments)
+    public function __call(string $method, array $arguments): mixed
     {
         if (!method_exists($this->repository, $method)) {
             $method = 'get'.ucfirst($method);
