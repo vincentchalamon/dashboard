@@ -10,6 +10,14 @@ html {
     background-attachment: fixed;
 }
 
+h3 {
+    width: 100%;
+}
+
+p {
+    width: 100%;
+}
+
 *, a {
     color: rgba(255, 255, 255, 0.7);
     text-decoration: none;

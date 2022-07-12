@@ -32,8 +32,11 @@
         <h3>You don't follow any repository!</h3>
         <p>Start following GitHub repositories by adding them in the "repositories.yaml" file:</p>
         <pre><code>repositories:
-  - https://github.com/api-platform/demo/
-  - https://github.com/GregoireHebert/docusign-bundle/</code></pre>
+  Default:
+    - https://github.com/GregoireHebert/docusign-bundle/
+
+  API Platform:
+    - https://github.com/api-platform/demo/</code></pre>
     {% endfor %}
     <div class="clearfix"></div>
 {% endblock %}
