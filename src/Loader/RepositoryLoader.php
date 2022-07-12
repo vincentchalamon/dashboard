@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Loader;
 
-use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -12,9 +11,7 @@ use Symfony\Component\Yaml\Yaml;
  */
 final class RepositoryLoader implements LoaderInterface
 {
-    private ?array $repositories = null;
-
-    public function __construct(private readonly string $projectDir)
+    public function __construct(private readonly string $projectDir, private readonly array $repositories = [])
     {
     }
 
@@ -23,27 +20,25 @@ final class RepositoryLoader implements LoaderInterface
      */
     public function load(): array
     {
-        if (null === $this->repositories) {
-            try {
-                $repositories = Yaml::parseFile(sprintf('%s/repositories.yaml', $this->projectDir))['repositories'] ?? [];
+        $repositories = $this->repositories;
 
-                // Detect if groups aren't used in repositories declaration
-                if (array_keys($repositories) === range(0, count($repositories) - 1)) {
-                    $repositories = ['Default' => $repositories];
-                }
-
-                $this->repositories = array_map(
-                    fn ($repositories): array => array_map(
-                        fn (string $repository): string => preg_replace('#^https:\/\/[^\/]+\/(.*)(?:\.git|\/)?$#', '$1', $repository),
-                        $repositories
-                    ),
-                    $repositories
-                );
-            } catch (ParseException) {
-                $this->repositories = [];
-            }
+        // If "repositories.yaml" file exists and is valid, it overrides the environment variable
+        $filename = sprintf('%s/repositories.yaml', $this->projectDir);
+        if (file_exists($filename)) {
+            $repositories = Yaml::parseFile($filename)['repositories'] ?? $repositories;
         }
 
-        return $this->repositories;
+        // Detect if groups aren't used in repositories declaration
+        if (array_keys($repositories) === range(0, count($repositories) - 1)) {
+            $repositories = ['Default' => $repositories];
+        }
+
+        return array_map(
+            fn ($repositories): array => array_map(
+                fn (string $repository): string => preg_replace('#^https:\/\/[^\/]+\/(.*)(?:\.git|\/)?$#', '$1', $repository),
+                $repositories
+            ),
+            $repositories
+        );
     }
 }

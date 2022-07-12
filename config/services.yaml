@@ -11,7 +11,6 @@ services:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
         bind:
-            $projectDir: '%kernel.project_dir%'
             $poolClearer: '@cache.global_clearer'
 
     App\Repository\RepositoryInterface: '@App\Repository\GitHubRepository'
@@ -33,10 +32,15 @@ services:
     # as action arguments even if you don't extend any base controller class
     App\Controller\:
         resource: '../src/Controller/'
-        tags: ['controller.service_arguments']
+        tags: [ 'controller.service_arguments' ]
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
     App\Repository\CachedRepository:
         decorates: 'App\Repository\GitHubRepository'
-        tags: ['kernel.cache_warmer']
+        tags: [ 'kernel.cache_warmer' ]
+
+    App\Loader\RepositoryLoader:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+            $repositories: '%env(json:APP_REPOSITORIES)%'

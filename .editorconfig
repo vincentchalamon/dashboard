@@ -19,7 +19,7 @@ insert_final_newline = true
 indent_style = space
 indent_size = 2
 
-[*.js]
+[*.{js,ts,html}]
 indent_style = space
 indent_size = 2
 
@@ -38,20 +38,16 @@ indent_size = 4
 indent_style = tab
 indent_size = 4
 
-[*.vcl]
-indent_style = space
-indent_size = 2
-
-[*.xml]
+[*.xml{,.dist}]
 indent_style = space
 indent_size = 4
 
 [*.{yaml,yml}]
 indent_style = space
-indent_size = 2
+indent_size = 4
 trim_trailing_whitespace = false
 
-[.github/workflows/*.{yaml,yml}]
+[.github/**/*.yml]
 indent_style = space
 indent_size = 2
 
@@ -67,18 +63,10 @@ indent_size = 4
 indent_style = space
 indent_size = 4
 
-[docker-compose{,.*}.{yaml,yml}]
+[docker-compose{,.*}.{yaml,yml}{,.dist}]
 indent_style = space
 indent_size = 2
 
 [Dockerfile]
 indent_style = tab
-indent_size = 4
-
-[package.json]
-indent_style = space
-indent_size = 2
-
-[phpunit.xml{,.dist}]
-indent_style = space
 indent_size = 4

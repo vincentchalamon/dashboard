@@ -2,8 +2,7 @@
 
 ![Tests](https://github.com/vincentchalamon/dashboard/workflows/Tests/badge.svg)
 
-This project provides a dashboard to follow your repositories workflows. By default, it runs with GitHub, but you can
-easily provide a bridge for any provider (GitLab, Bitbucket, etc.).
+This project provides a dashboard to follow your GitHub repositories workflows.
 
 ![Dashboard](doc/screenshot.png)
 
@@ -11,29 +10,21 @@ easily provide a bridge for any provider (GitLab, Bitbucket, etc.).
 
 - [PHP](https://www.php.net/) >= 8.1
 - [Symfony](https://symfony.com/download)
-
-## Usage with GitHub
-
 - [GitHub Personal Access Token][github-pat]
 
-# Install
+# Install locally
 
 ```shell
 git clone git@github.com:vincentchalamon/dashboard.git dashboard
 cd dashboard
+symfony composer install
+symfony composer dump-env prod
 symfony server:start
 ```
 
-# Configuration
+## Configuration
 
-It's recommended to dump the environment variables using composer:
-
-```shell
-composer dump-env prod
-```
-
-_Note: for a GitHub usage, generate a [GitHub Personal Access Token][github-pat] and change the `GITHUB_API_TOKEN`
-environment variable with your own in the `.env.local.php` file._
+Configure a [GitHub Personal Access Token][github-pat] on the `GITHUB_API_TOKEN` environment variable.
 
 Create the `repositories.yaml` file at the root of your project, as following:
 
@@ -42,11 +33,33 @@ repositories:
     Default:
         - https://github.com/GregoireHebert/docusign-bundle/
     API Platform:
-        - https://github.com/api-platform/demo/
+        - api-platform/demo
 ```
 
-_Note: to prevent too many requests to the provider API, data are stored in cache. To refresh them, just clear the
-pool:_
+_Note: your repository can be named as `https://github.com/owner/repo` or even `owner/repo`._
+
+# Install on Heroku
+
+```shell
+heroku create
+git push heroku master
+```
+
+## Configuration
+
+Configure a Config Var `GITHUB_API_TOKEN` with your [GitHub Personal Access Token][github-pat].
+
+Configure a Config Var `APP_REPOSITORIES` with a JSON containing your repositories:
+
+```json
+{"Default": ["https://github.com/GregoireHebert/docusign-bundle/"], "API Platform": ["api-platform/demo"]}
+```
+
+_Note: your repository can be named as `https://github.com/owner/repo` or even `owner/repo`._
+
+# Cache
+
+To prevent too many requests to the provider API, data are stored in cache. To refresh them, just clear the pool:
 
 ```shell
 bin/console cache:pool:clear cache.repository
