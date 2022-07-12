@@ -6,15 +6,14 @@ namespace App\Repository;
 
 use App\Loader\LoaderInterface;
 use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
-use Symfony\Contracts\Cache\ItemInterface;
-use Symfony\Contracts\Cache\TagAwareCacheInterface;
+use Symfony\Contracts\Cache\CacheInterface;
 
 /**
  * @author Vincent Chalamon <vincentchalamon@gmail.com>
  */
 final class CachedRepository implements RepositoryInterface, CacheWarmerInterface
 {
-    public function __construct(private readonly RepositoryInterface $decorated, private readonly TagAwareCacheInterface $cache, private readonly LoaderInterface $loader)
+    public function __construct(private readonly RepositoryInterface $decorated, private readonly CacheInterface $cacheRepository, private readonly LoaderInterface $loader)
     {
     }
 
@@ -66,16 +65,18 @@ final class CachedRepository implements RepositoryInterface, CacheWarmerInterfac
      */
     public function warmUp(string $cacheDir): array
     {
-        foreach ($this->loader->load() as $repository) {
-            foreach (['exists', 'defaultBranch', 'url', 'workflows', 'stars'] as $method) {
-                $this->getCacheItem($repository, $method, function () use ($method, $repository) {
-                    if (!method_exists($this->decorated, $method)) {
-                        $method = 'get'.ucfirst($method);
-                    }
+        foreach ($this->loader->load() as $repositories) {
+            foreach ($repositories as $repository) {
+                foreach (['exists', 'defaultBranch', 'url', 'workflows', 'stars'] as $method) {
+                    $this->getCacheItem($repository, $method, function () use ($method, $repository): mixed {
+                        if (!method_exists($this->decorated, $method)) {
+                            $method = 'get'.ucfirst($method);
+                        }
 
-                    /* @phpstan-ignore-next-line */
-                    return call_user_func([$this->decorated, $method], $repository);
-                });
+                        /* @phpstan-ignore-next-line */
+                        return call_user_func([$this->decorated, $method], $repository);
+                    });
+                }
             }
         }
 
@@ -87,13 +88,9 @@ final class CachedRepository implements RepositoryInterface, CacheWarmerInterfac
      */
     private function getCacheItem(string $name, string $suffix, callable $callback)
     {
-        return $this->cache->get(
+        return $this->cacheRepository->get(
             sprintf('repository.%s.%s', str_replace('/', '-', $name), $suffix),
-            function (ItemInterface $item) use ($name, $callback) {
-                $item->tag(str_replace('/', '-', $name));
-
-                return $callback();
-            }
+            $callback
         );
     }
 }
