@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    {% if getRepositories()|length %}
+    {% if getGroups()|length %}
         <a class="cache-clear" href="{{ path('app.cache') }}">
             <svg viewBox="0 0 24 24" focusable="false" fill="currentColor" width="2em" height="2em" aria-hidden="true">
                 <path d="M13.5 2c-5.621 0-10.211 4.443-10.475 10h-3.025l5 6.625 5-6.625h-2.975c.257-3.351 3.06-6 6.475-6 3.584 0 6.5 2.916 6.5 6.5s-2.916 6.5-6.5 6.5c-1.863 0-3.542-.793-4.728-2.053l-2.427 3.216c1.877 1.754 4.389 2.837 7.155 2.837 5.79 0 10.5-4.71 10.5-10.5s-4.71-10.5-10.5-10.5z"/>
@@ -9,14 +9,14 @@
         </a>
     {% endif %}
 
-    {% for group, repositories in getRepositories() %}
-        {% if 'Default' != group %}
-            <h3 class="group-title{{ loop.first ? ' first' : '' }}">{{ group }}</h3>
+    {% for group in getGroups() %}
+        {% if not group|isDefault %}
+            <h3 class="group-title{{ loop.first ? ' first' : '' }}">{{ group.name }}</h3>
         {% endif %}
-        {% for repository in repositories %}
+        {% for repository in group.repositories %}
             <div class="card">
                 <h5 class="title">
-                    <a href="https://github.com/{{ repository }}" target="_blank" title="{{ repository }}">{{ repository }}</a>
+                    <a href="{{ repository.uri }}" target="_blank" title="{{ repository.name }}">{{ repository.name }}</a>
                 </h5>
                 <div class="loader">Loading...</div>
             </div>
@@ -24,19 +24,25 @@
             <h3>You don't follow any repository in this group!</h3>
             <p>Start following GitHub repositories by adding them in the "repositories.yaml" file:</p>
             <pre><code>repositories:
-  {{ group }}:
-    - https://github.com/api-platform/demo/
-    - https://github.com/GregoireHebert/docusign-bundle/</code></pre>
+    {{ group.name }}:
+        https://github.com/api-platform/demo/:
+            workflows:
+                - foo
+                - bar
+        https://github.com/GregoireHebert/docusign-bundle/: ~</code></pre>
         {% endfor %}
     {% else %}
         <h3>You don't follow any repository!</h3>
         <p>Start following GitHub repositories by adding them in the "repositories.yaml" file:</p>
         <pre><code>repositories:
-  Default:
-    - https://github.com/GregoireHebert/docusign-bundle/
+    API Platform:
+        https://github.com/api-platform/demo/:
+            workflows:
+              - foo
+              - bar
 
-  API Platform:
-    - https://github.com/api-platform/demo/</code></pre>
+    Default:
+        https://github.com/GregoireHebert/docusign-bundle/: ~</code></pre>
     {% endfor %}
     <div class="clearfix"></div>
 {% endblock %}
@@ -77,7 +83,7 @@
                     url: `/${title}`,
                     error: function () {
                         $('.loader', $this).fadeOut('fast', function () {
-                            const $result = $('<div class="card-content"><h4 class="error">Invalid repository!</h4><p>This repository does not exist on GitHub.</p></div>').hide();
+                            const $result = $('<div class="card-content"><h4 class="error">Invalid repository!</h4><p>This repository does not exist.</p></div>').hide();
                             $(this).replaceWith($result);
                             $result.fadeIn('fast');
                         });

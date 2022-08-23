@@ -16,6 +16,10 @@ framework:
 
         # Namespaced pools use the above "app" backend by default
         pools:
+            # todo Move both caches to redis on production
             cache.repository:
+                adapter: cache.adapter.filesystem
+                default_lifetime: '1 week'
+            cache.github:
                 adapter: cache.adapter.filesystem
                 default_lifetime: '1 week'
