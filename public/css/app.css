@@ -217,13 +217,19 @@ code {
 }
 
 .card .card-footer .workflow .name {
-    width: 30%;
+    width: 29%;
     display: inline-block;
     text-align: right;
     padding-right: 1%;
     font-size: 0.9em;
     text-overflow: ellipsis;
     white-space: nowrap;
+    overflow-x: hidden;
+}
+
+.card .card-footer .workflow .runs {
+    width: 69%;
+    display: inline-block;
     overflow-x: hidden;
 }
 

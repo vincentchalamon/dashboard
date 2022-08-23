@@ -9,6 +9,6 @@ use RuntimeException;
 /**
  * @author Vincent Chalamon <vincentchalamon@gmail.com>
  */
-final class UnsupportedRepositoryException extends RuntimeException
+final class InvalidConfigurationException extends RuntimeException
 {
 }
