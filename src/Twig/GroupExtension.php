@@ -37,7 +37,7 @@ final class GroupExtension extends AbstractExtension
     public function getFilters(): array
     {
         return [
-            new TwigFilter('isDefault', function (Group $group): bool {
+            new TwigFilter('isDefault', static function (Group $group): bool {
                 return 'Default' === $group->getName();
             }),
         ];

@@ -19,13 +19,13 @@ final class RunExtension extends AbstractExtension
     public function getFilters(): array
     {
         return [
-            new TwigFilter('isSuccess', function (Run $run): bool {
+            new TwigFilter('isSuccess', static function (Run $run): bool {
                 return 'success' === $run->getState();
             }),
-            new TwigFilter('isFailure', function (Run $run): bool {
+            new TwigFilter('isFailure', static function (Run $run): bool {
                 return in_array($run->getState(), ['cancelled', 'failure', 'skipped'], true);
             }),
-            new TwigFilter('isPending', function (Run $run): bool {
+            new TwigFilter('isPending', static function (Run $run): bool {
                 return !in_array($run->getState(), ['success', 'cancelled', 'failure', 'skipped'], true);
             }),
         ];
