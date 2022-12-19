@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Server;
 
 use App\Metadata\RepositoryMetadataInterface;
-use App\Model\Workflow;
 use Github\Client as GitHubClient;
+use Iterator;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Log\LoggerInterface;
 
@@ -24,7 +24,7 @@ final class GitHubServer implements ServerInterface
         return $this->getData($repository->getName())['default_branch'];
     }
 
-    public function getWorkflows(RepositoryMetadataInterface $repository): iterable
+    public function getWorkflows(RepositoryMetadataInterface $repository): Iterator
     {
         list($org, $repo) = explode('/', $repository->getName());
 
@@ -47,7 +47,7 @@ final class GitHubServer implements ServerInterface
 
                 // Workflow is ignored
                 $workflows = $repository->getWorkflows();
-                if (!empty($workflows) && !in_array($workflow['name'], $workflows, true)) {
+                if ($workflows !== [] && !in_array($workflow['name'], $workflows, true)) {
                     continue;
                 }
 
@@ -60,7 +60,7 @@ final class GitHubServer implements ServerInterface
         yield from [];
     }
 
-    public function getRuns(RepositoryMetadataInterface $repository, string $workflowId): iterable
+    public function getRuns(RepositoryMetadataInterface $repository, string $workflowId): Iterator
     {
         list($org, $repo) = explode('/', $repository->getName());
 

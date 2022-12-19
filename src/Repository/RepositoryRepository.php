@@ -8,6 +8,7 @@ use App\Metadata\Loader\LoaderInterface;
 use App\Metadata\RepositoryMetadataInterface;
 use App\Model\Repository;
 use App\Server\ServerInterface;
+use Iterator;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
 /**
@@ -32,12 +33,12 @@ final class RepositoryRepository
         return null;
     }
 
-    public function findAll(): iterable
+    public function findAll(): Iterator
     {
         yield from $this->findBy([]);
     }
 
-    public function findBy(array $criteria): iterable
+    public function findBy(array $criteria): Iterator
     {
         foreach ($this->loader->load() as $repositories) {
             foreach ($repositories as $repository) {

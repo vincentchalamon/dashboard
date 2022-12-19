@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use App\Metadata\Loader\LoaderInterface;
 use App\Model\Group;
+use Iterator;
 
 /**
  * @author Vincent Chalamon <vincentchalamon@gmail.com>
@@ -16,7 +17,7 @@ final class GroupRepository
     {
     }
 
-    public function findAll(): iterable
+    public function findAll(): Iterator
     {
         foreach (array_keys($this->loader->load()) as $group) {
             yield new Group($group, $this->repositoryRepository->findBy(['group' => $group]));

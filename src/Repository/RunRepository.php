@@ -8,6 +8,7 @@ use App\Metadata\RepositoryMetadataInterface;
 use App\Model\Run;
 use App\Server\ServerInterface;
 use DateTimeImmutable;
+use Iterator;
 
 /**
  * @author Vincent Chalamon <vincentchalamon@gmail.com>
@@ -18,7 +19,7 @@ final class RunRepository
     {
     }
 
-    public function findAll(RepositoryMetadataInterface $repository, string $workflowId): iterable
+    public function findAll(RepositoryMetadataInterface $repository, string $workflowId): Iterator
     {
         foreach ($this->server->getRuns($repository, $workflowId) as $run) {
             list($uri, $state, $updatedAt) = $run;

@@ -7,6 +7,7 @@ namespace App\Repository;
 use App\Metadata\RepositoryMetadataInterface;
 use App\Model\Workflow;
 use App\Server\ServerInterface;
+use Iterator;
 
 /**
  * @author Vincent Chalamon <vincentchalamon@gmail.com>
@@ -17,7 +18,7 @@ final class WorkflowRepository
     {
     }
 
-    public function findAll(RepositoryMetadataInterface $repository): iterable
+    public function findAll(RepositoryMetadataInterface $repository): Iterator
     {
         foreach ($this->server->getWorkflows($repository) as $workflow) {
             list($id, $name) = $workflow;
