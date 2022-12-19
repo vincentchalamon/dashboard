@@ -11,6 +11,7 @@ on:
 env:
   APP_ENV: 'test'
   APP_DEBUG: '0'
+  PHP_CS_FIXER_IGNORE_ENV: '1'
 
 jobs:
   tests:

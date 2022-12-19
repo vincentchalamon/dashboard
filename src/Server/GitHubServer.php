@@ -47,7 +47,7 @@ final class GitHubServer implements ServerInterface
 
                 // Workflow is ignored
                 $workflows = $repository->getWorkflows();
-                if ($workflows !== [] && !in_array($workflow['name'], $workflows, true)) {
+                if ([] !== $workflows && !in_array($workflow['name'], $workflows, true)) {
                     continue;
                 }
 
