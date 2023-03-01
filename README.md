@@ -150,31 +150,6 @@ final class FooServer implements ServerInterface
 
 > Note: to prevent to reach any `X-Rate-Limit`, you should consider [adding your own cache](#add-your-own-cache).
 
-## Deploy on Heroku
-
-### Requirements
-
-- [Heroku](https://www.heroku.com/)
-
-### Deploy
-
-```shell
-heroku create
-git push heroku master
-```
-
-### Configuration
-
-Configure a Config Var `GITHUB_API_TOKEN` with your [GitHub Personal Access Token][github-pat].
-
-Configure a Config Var `APP_REPOSITORIES` with a JSON containing your repositories:
-
-```json
-{"Default": ["https://github.com/GregoireHebert/docusign-bundle/"], "API Platform": {"api-platform/demo": {"workflows": ["foo", "bar"]}}}
-```
-
-_Note: your repository can be named as `https://github.com/owner/repo` or even `owner/repo`._
-
 ## Credits
 
 Created by [Vincent CHALAMON](https://github.com/vincentchalamon).
