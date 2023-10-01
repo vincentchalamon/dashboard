@@ -16,9 +16,6 @@ final class LoaderCacheWarmer implements CacheWarmerInterface
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function warmUp(string $cacheDir): array
     {
         $this->loader->load();
@@ -26,9 +23,6 @@ final class LoaderCacheWarmer implements CacheWarmerInterface
         return [];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isOptional(): bool
     {
         return true;

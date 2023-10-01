@@ -18,9 +18,6 @@ final class GitHubClientCacheClearer implements CacheClearerInterface
     ) {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function clear(string $cacheDir): void
     {
         $this->poolClearer->clearPool('cache.github');

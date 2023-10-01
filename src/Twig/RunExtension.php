@@ -13,9 +13,6 @@ use Twig\TwigFilter;
  */
 final class RunExtension extends AbstractExtension
 {
-    /**
-     * {@inheritdoc}
-     */
     public function getFilters(): array
     {
         return [
